@@ -1,0 +1,33 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "admin-ui",
+    "application-flow",
+    "audit",
+    "audit-errors",
+    "auth-ui",
+    "main",
+    "origin",
+    "project-clenup"
+  ],
+  "parent": {
+    "admin-ui": "main",
+    "application-flow": "main",
+    "audit": "main",
+    "audit-errors": "audit",
+    "auth-ui": "main",
+    "main": null,
+    "origin": "main",
+    "project-clenup": "main"
+  },
+  "order": [
+    "main",
+    "admin-ui",
+    "application-flow",
+    "audit",
+    "auth-ui",
+    "origin",
+    "project-clenup",
+    "audit-errors"
+  ]
+}
