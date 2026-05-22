@@ -62,7 +62,7 @@ const ProblemSection = () => {
                 {/* Top row */}
                 <div className="relative mb-12 flex items-center justify-between">
                   <span className="text-xs font-semibold tracking-[0.2em] text-gray-400">
-                    {item.number}
+                    {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>
 
