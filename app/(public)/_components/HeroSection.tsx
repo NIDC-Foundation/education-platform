@@ -141,9 +141,9 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-[2rem] border border-border bg-muted shadow-2xl">
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-muted shadow-2xl">
             <Image
-              src="/images/hero-mentor.jpg"
+              src="/feature-03.png"
               alt="Mentor guiding a young African learner in a modern innovation workspace"
               width={900}
               height={1100}
@@ -151,7 +151,7 @@ export default function HeroSection() {
               className="h-[560px] w-full object-cover object-center sm:h-[650px]"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/55 via-black/10 to-transparent" />
 
             <div className="absolute bottom-5 left-5 right-5 rounded-3xl border border-white/15 bg-black/45 p-5 text-white shadow-xl backdrop-blur-md">
               <div className="mb-4 flex items-center justify-between gap-4">
