@@ -1,126 +1,117 @@
 import { BookOpen, BriefcaseBusiness, Building2, Target } from "lucide-react";
 import Image from "next/image";
 
-const SOLUTION_FEATURES = [
-  {
-    icon: Target,
-    title: "Structured growth",
-    description:
-      "Development is intentional, tracked, and tied to clear standards.",
-  },
-  {
-    icon: BookOpen,
-    title: "Capability first",
-    description:
-      "The focus is on building people who can do real work, not just complete a program.",
-  },
-  {
-    icon: BriefcaseBusiness,
-    title: "Aligned opportunities",
-    description:
-      "Growth opens access to learning pathways, exposure, and support that fit the system.",
-  },
-  {
-    icon: Building2,
-    title: "Real-world contribution",
-    description:
-      "Participants are positioned to apply what they build within functioning systems.",
-  },
-];
-
 const SolutionSection = () => {
   return (
-    <section className="w-full bg-background-foreground px-4 py-16 md:px-8 lg:py-24">
-      <div className="mx-auto max-w-[1300px]">
-        {/* Top Image + Floating Content */}
-        <div className="relative mb-10 md:mb-14">
-          <div className="relative h-[250px] overflow-hidden rounded-xl md:h-[390px]">
-            <Image
-              src="/solution_banner.png"
-              alt="NIDC talents and mentors in a structured learning workshop"
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, 1300px"
-              className="object-cover object-center"
-            />
-
-            {/* Extra lime overlay to match your reference */}
-            <div className="absolute inset-0 bg-primary/25 mix-blend-multiply" />
-            <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-primary/25" />
+    <section className="relative w-full overflow-hidden bg-background px-4 py-24 md:px-8 lg:py-32">
+      <div className="relative mx-auto max-w-7xl">
+        {/* Section Header */}
+        <div className="mb-12 md:mb-16">
+          <div className="mb-6 flex">
+            <span className="nidc-eyebrow">
+              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+              The Solution
+            </span>
           </div>
-
-          {/* Floating Card */}
-          <div className="relative z-10 mx-auto -mt-16 max-w-[92%] rounded-xl border border-gray-100/70 bg-white px-6 py-7 text-center shadow-[0_18px_55px_rgba(15,23,42,0.08)] md:-mt-24 md:max-w-4xl md:px-12 md:py-10">
-            <div className="mb-4 inline-flex items-center gap-3">
-              <span className="h-px w-6 bg-gray-300" />
-              <span className="text-[11px] font-bold uppercase tracking-[0.24em] text-gray-500">
-                The Solution
-              </span>
-              <span className="h-px w-6 bg-gray-300" />
-            </div>
-
-            <h2 className="mb-4 text-2xl font-semibold tracking-[-0.04em] text-[#1a1a1a] md:text-4xl lg:text-5xl">
-              A system for turning potential into capability.
-            </h2>
-
-            <p className="mx-auto max-w-3xl text-sm leading-7 text-gray-500 md:text-[1rem] md:leading-8">
-              NIDC is designed as a long-term system for developing and
-              deploying talent into areas that matter. We build a structured
-              pathway that connects growth to real-world contribution.
-            </p>
-          </div>
+          <h2 className="mb-6 text-balance text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
+            A system for turning <br className="hidden md:block" />
+            <span className="text-muted-foreground">potential into capability.</span>
+          </h2>
         </div>
 
-        {/* Main Content Area */}
-        <div className="rounded-xl bg-[background p-5 md:p-8">
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.05fr_1fr]">
-            {/* Large Statement Card */}
-            <article className="bg-white p-8 shadow-sm ring-1 ring-black/5 rounded-xl md:p-10 lg:p-12">
-              <div className="space-y-6 text-[1rem] leading-8 text-[#292929] md:text-lg md:leading-9">
-                <p>
-                  NIDC is designed as a long-term system for developing and
-                  deploying talent into areas that matter.
-                </p>
-
-                <p>
-                  We do not simply provide access or support. We build a
-                  structured pathway that connects growth to real-world
-                  contribution.
-                </p>
-
-                <p className="font-semibold text-[#1a1a1a]">
-                  This is not about participation. It is about becoming capable,
-                  and applying that capability where it creates impact.
-                </p>
-              </div>
-            </article>
-
-            {/* Feature Cards */}
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              {SOLUTION_FEATURES.map((feature) => {
-                const Icon = feature.icon;
-
-                return (
-                  <article
-                    key={feature.title}
-                    className="group rounded-xl bg-white p-7 shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1  md:p-8"
-                  >
-                    <div className="mb-5 flex size-10 items-center justify-center rounded-full bg-[#21D100]/10 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-white">
-                      <Icon className="size-5" strokeWidth={2.2} />
-                    </div>
-
-                    <h3 className="mb-3 text-lg font-semibold tracking-tight text-[#1a1a1a]">
-                      {feature.title}
-                    </h3>
-
-                    <p className="text-sm leading-7 text-gray-500 md:text-[0.95rem]">
-                      {feature.description}
-                    </p>
-                  </article>
-                );
-              })}
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:grid-rows-3 md:gap-6">
+          
+          {/* Box 1 (Hero Intro) - Spans 2x2 */}
+          <div className="group relative min-h-[400px] overflow-hidden rounded-[2rem] border border-border/50 bg-card p-0 shadow-sm transition-all duration-300 md:col-span-2 md:row-span-2">
+            <Image
+              src="/collaboration.png"
+              alt="NIDC talents and mentors collaborating"
+              fill
+              className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
+            />
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent dark:from-background/95 dark:via-background/60" />
+            
+            {/* Content */}
+            <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-12">
+              <p className="max-w-xl text-lg font-medium leading-relaxed text-foreground md:text-2xl">
+                NIDC is designed as a long-term system for developing and deploying talent into areas that matter. We build a structured pathway that connects growth to real-world contribution.
+              </p>
             </div>
           </div>
+
+          {/* Box 2 (Structured growth) */}
+          <div className="group relative overflow-hidden rounded-[2rem] border border-border/50 bg-card p-8 shadow-sm transition-all duration-300 hover:border-primary/20 hover:shadow-md dark:bg-card/40 dark:hover:bg-card/80">
+            <div className="absolute right-0 top-0 opacity-10 transition-opacity duration-500 group-hover:opacity-20">
+            </div>
+            <div className="relative z-10 flex h-full flex-col">
+              <div className="mb-6 flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Target className="size-6" strokeWidth={2} />
+              </div>
+              <div className="mt-auto">
+                <h3 className="mb-3 text-xl font-bold tracking-tight text-foreground">Structured growth</h3>
+                <p className="text-[0.95rem] leading-relaxed text-muted-foreground">
+                  Development is intentional, tracked, and tied to clear standards.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Box 3 (Capability first) */}
+          <div className="group relative overflow-hidden rounded-[2rem] border border-border/50 bg-card p-8 shadow-sm transition-all duration-300 hover:border-primary/20 hover:shadow-md dark:bg-card/40 dark:hover:bg-card/80">
+            <div className="relative z-10 flex h-full flex-col">
+              <div className="mb-6 flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <BookOpen className="size-6" strokeWidth={2} />
+              </div>
+              <div className="mt-auto">
+                <h3 className="mb-3 text-xl font-bold tracking-tight text-foreground">Capability first</h3>
+                <p className="text-[0.95rem] leading-relaxed text-muted-foreground">
+                  The focus is on building people who can do real work, not just complete a program.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Box 4 (Aligned opportunities) */}
+          <div className="group relative overflow-hidden rounded-[2rem] border border-border/50 bg-card p-8 shadow-sm transition-all duration-300 hover:border-primary/20 hover:shadow-md dark:bg-card/40 dark:hover:bg-card/80">
+            <div className="relative z-10 flex h-full flex-col">
+              <div className="mb-6 flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <BriefcaseBusiness className="size-6" strokeWidth={2} />
+              </div>
+              <div className="mt-auto">
+                <h3 className="mb-3 text-xl font-bold tracking-tight text-foreground">Aligned opportunities</h3>
+                <p className="text-[0.95rem] leading-relaxed text-muted-foreground">
+                  Growth opens access to learning pathways, exposure, and support that fit the system.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Box 5 (Real-world contribution) - Spans 2 cols */}
+          <div className="group relative min-h-[250px] overflow-hidden rounded-[2rem] border border-border/50 bg-card p-0 shadow-sm transition-all duration-300 md:col-span-2">
+             <Image
+              src="/focused.png"
+              alt="Talent actively applying capabilities"
+              fill
+              className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
+            />
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-transparent dark:from-background/95 dark:via-background/70" />
+            
+            <div className="absolute inset-0 flex flex-col justify-center p-8 md:p-12">
+               <div className="mb-6 flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary backdrop-blur-sm">
+                <Building2 className="size-6" strokeWidth={2} />
+              </div>
+              <div className="max-w-md">
+                <h3 className="mb-3 text-2xl font-bold tracking-tight text-foreground">Real-world contribution</h3>
+                <p className="text-[0.95rem] leading-relaxed text-muted-foreground md:text-base">
+                  Participants are positioned to apply what they build within functioning systems, generating real impact.
+                </p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>

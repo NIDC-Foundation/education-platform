@@ -23,24 +23,27 @@ const PROBLEM_ITEMS = [
 
 const ProblemSection = () => {
   return (
-    <section className="relative w-full overflow-hidden bg-background px-4 py-20 md:px-8 lg:py-28">
-
-      <div className="relative mx-auto max-w-325">
+    <section className="relative w-full overflow-hidden bg-background px-4 py-24 md:px-8 lg:py-32">
+      {/* Background Grid Pattern */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.04] dark:opacity-[0.06] nidc-grid" />
+      
+      <div className="relative mx-auto max-w-7xl">
         {/* Header */}
-        <div className="mx-auto mb-14 max-w-3xl text-center md:mb-16">
-          <div className="mb-4 inline-flex items-center gap-3 rounded-full border border-gray-200 bg-white/80 px-4 py-2 shadow-sm backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            <span className="text-xs font-bold uppercase text-secondary">
+        <div className="mx-auto mb-16 max-w-3xl text-center md:mb-24">
+          <div className="mb-6 flex justify-center">
+            <span className="nidc-eyebrow">
+              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
               The Problem
             </span>
           </div>
 
-          <h2 className="mb-5 text-balance text-3xl font-semibold tracking-[-0.04em] text-foreground md:text-5xl lg:text-6xl">
+          <h2 className="mb-6 text-balance text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
             Nigeria has talent.
-            <span className="block text-card">But no system.</span>
+            <br className="hidden md:block" />
+            <span className="text-muted-foreground">But no system.</span>
           </h2>
 
-          <p className="mx-auto max-w-2xl text-[0.98rem] leading-8 text-gray-500 md:text-lg">
+          <p className="mx-auto max-w-2xl text-base leading-relaxed text-muted-foreground md:text-xl md:leading-relaxed">
             Across the country, capable individuals emerge every year, yet many
             are unable to translate their ability into meaningful contribution.
             Not because they lack potential, but because there is no clear
@@ -48,51 +51,40 @@ const ProblemSection = () => {
           </p>
         </div>
 
-        {/* Main card shell */}
-        <div className="overflow-hidden rounded-[2rem] border border-gray-200/80 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.06)] md:rounded-[2.75rem]">
-          <div className="grid grid-cols-1 md:grid-cols-3">
-            {PROBLEM_ITEMS.map((item, index) => (
-              <article
-                key={item.label}
-                className="group relative min-h-[320px] overflow-hidden border-b border-gray-100 bg-[#fbfbfb] p-8 transition-all duration-500 hover:bg-white md:border-b-0 md:border-r md:p-10 lg:p-12 last:md:border-r-0"
-              >
-                {/* Hover glow */}
-                <div className="absolute inset-x-8 top-8 h-28 rounded-full bg-[#ccff66]/0 blur-3xl transition-all duration-500 group-hover:bg-[#ccff66]/20" />
+        {/* Main layout */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
+          {PROBLEM_ITEMS.map((item, index) => (
+            <article
+              key={item.label}
+              className="group relative overflow-hidden rounded-[2rem] border border-border/50 bg-card p-8 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/20 dark:bg-card/40 dark:hover:bg-card/80 md:p-10"
+            >
+              {/* Subtle hover background highlight */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-                {/* Top row */}
-                <div className="relative mb-12 flex items-center justify-between">
-                  <span className="text-xs font-semibold tracking-[0.2em] text-gray-400">
+              <div className="relative z-10 flex h-full flex-col">
+                {/* Top header of card */}
+                <div className="mb-10 flex items-center justify-between">
+                  <div className="flex h-10 items-center justify-center rounded-xl bg-primary/10 px-4 text-sm font-bold text-primary">
+                    {item.label}
+                  </div>
+                  <span className="text-3xl font-bold text-muted-foreground/20 dark:text-muted-foreground/10 transition-colors group-hover:text-primary/20">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>
 
-                {/* Label block */}
-                <div className="relative mb-8">
-                  <div className="inline-flex min-w-37.5 items-center justify-center rounded-2xl bg-accent px-4 py-4 shadow-sm transition-all duration-500 group-hover:-translate-y-1 group-hover:bg-primary group-hover:shadow-[0_14px_35px_rgba(204,255,102,0.35)]">
-                    <span className="text-xl font-bold tracking-tight text-secondary">
-                      {item.label}
-                    </span>
-                  </div>
-                </div>
-
                 {/* Content */}
-                <div className="relative">
-                  <h3 className="mb-3 max-w-[260px] text-xl font-semibold tracking-tight text-secondary-foreground">
+                <div className="mt-auto">
+                  <h3 className="mb-4 text-2xl font-bold tracking-tight text-foreground">
                     {item.title}
                   </h3>
-
-                  <p className="max-w-[310px] text-[0.95rem] leading-7 text-gray-500">
+                  <p className="text-[0.95rem] leading-relaxed text-muted-foreground">
                     {item.description}
                   </p>
                 </div>
-
-                {/* Bottom accent line */}
-                <div className="absolute bottom-0 left-0 h-1 w-0 bg-primary transition-all duration-500 group-hover:w-full" />
-              </article>
-            ))}
-          </div>
+              </div>
+            </article>
+          ))}
         </div>
-
       </div>
     </section>
   );
