@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 
 interface CTABlockProps {
   title: string;
@@ -35,12 +34,12 @@ export function CTABlock({
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link href={primaryActionHref}>
             <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md font-semibold gap-2 h-11 px-8">
-              {primaryActionLabel} <ArrowRight className="h-4 w-4" />
+              {primaryActionLabel} 
             </Button>
           </Link>
           {secondaryActionLabel && (
             <Link href={secondaryActionHref}>
-              <Button size="lg" variant="outline"
+              <Button size="lg" variant="secondary"
                 className="rounded-md font-medium h-11 px-8 border-background/20 bg-transparent text-background hover:bg-background/10">
                 {secondaryActionLabel}
               </Button>
