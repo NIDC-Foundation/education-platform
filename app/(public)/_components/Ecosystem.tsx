@@ -13,19 +13,19 @@ const HUB_AREAS = [
     title: "Manufacturing & Industrial Systems",
     description: "Environments where ideas translate into physical output through applied engineering and production.",
     icon: Factory,
-    image: "/images/hub-manufacturing.webp",
+    image: "/high-tech.png",
   },
   {
     title: "Digital Infrastructure",
     description: "Systems that enable coordination, data, and technology development across the ecosystem.",
     icon: Monitor,
-    image: "/images/hub-digital.webp",
+    image: "/digital-hub.png",
   },
   {
     title: "Advanced Materials",
     description: "Exploratory environments focused on next-generation industrial capabilities.",
     icon: Cog,
-    image: "/images/hub-materials.webp",
+    image: "/advance-material.png",
     isFutureExpansion: true,
   },
 ];
