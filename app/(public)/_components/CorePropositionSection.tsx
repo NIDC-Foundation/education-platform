@@ -27,7 +27,7 @@ const propositionContent: PropositionContent = {
     alt: "Focused African learner in a modern education environment",
   },
   cohortImage: {
-    src: "/feature-02.png",
+    src: "/images/nidc2.jpeg",
     alt: "Small selected cohort learning together",
   },
   mentorImage: {

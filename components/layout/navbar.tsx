@@ -8,6 +8,7 @@ import { useGSAP } from "@gsap/react";
 import { Button, buttonVariants } from "../ui/button";
 import { ThemeToggle } from "./theme-toggle";
 import { navLinks } from "@/constants";
+import Image from "next/image";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -55,18 +56,8 @@ export default function Navbar() {
     <>
       <nav className="w-full border-b border-border/50 bg-background/95 backdrop-blur-sm sticky top-0 z-50 px-4 sm:px-8">
         <div className="mx-auto flex items-center justify-between py-3 gap-4">
-          <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center shadow-sm shadow-primary/20">
-              <span className="text-primary-foreground font-bold text-sm">
-                N
-              </span>
-            </div>
-            <div className="leading-none">
-              <span className="font-bold text-sm tracking-tight">NIDC</span>
-              <span className="hidden sm:block text-[10px] text-muted-foreground mt-1 uppercase tracking-[0.2em]">
-                System Builders
-              </span>
-            </div>
+          <Link href="/">
+            <Image src={`/images/logo.png`} width={150} height={10} alt=""/>
           </Link>
 
           <div className="hidden md:flex items-center gap-1">

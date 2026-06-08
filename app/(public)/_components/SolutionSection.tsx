@@ -25,7 +25,7 @@ const SolutionSection = () => {
           {/* Box 1 (Hero Intro) - Spans 2x2 */}
           <div className="group relative min-h-[400px] overflow-hidden rounded-[2rem] border border-border/50 bg-card p-0 shadow-sm transition-all duration-300 md:col-span-2 md:row-span-2">
             <Image
-              src="/collaboration.png"
+              src="/images/nidc1.jpeg"
               alt="NIDC talents and mentors collaborating"
               fill
               className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
