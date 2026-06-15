@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Info, Save, ArrowRight } from "lucide-react";
-import { nigerianStates } from "@/constants/nigeria";
+import { currentStatusOptions } from "@/constants/application";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { saveApplicationStep } from "@/lib/supabase/actions";
@@ -24,26 +24,16 @@ interface PersonalInfoFormProps {
 }
 
 type SavedPersonalInfo = Partial<{
-  firstName: string;
-  middleName: string;
-  lastName: string;
+  fullName: string;
   email: string;
   phone: string;
-  dateOfBirth: string;
-  gender: string;
-  nationalId: string;
-  stateOfOrigin: string;
-  lgaOfOrigin: string;
-  address: string;
   city: string;
-  resState: string;
+  country: string;
+  currentStatus: string;
 }>;
 
 type ApplicantProfile = Partial<
-  Record<
-    "first_name" | "last_name" | "email" | "phone" | "state_of_origin",
-    string | null
-  >
+  Record<"first_name" | "last_name" | "email" | "phone", string | null>
 >;
 
 export function PersonalInfoForm({
@@ -56,6 +46,9 @@ export function PersonalInfoForm({
   const formRef = useRef<HTMLFormElement>(null);
   const pi = (application?.personal_info || {}) as SavedPersonalInfo;
   const profileData = profile as ApplicantProfile;
+  const defaultFullName =
+    pi.fullName ||
+    [profileData.first_name, profileData.last_name].filter(Boolean).join(" ");
 
   const handleSave = async (
     e: React.FormEvent | React.MouseEvent<HTMLButtonElement>,
@@ -75,19 +68,12 @@ export function PersonalInfoForm({
         return typeof value === "string" ? value.trim() : "";
       };
       const personalInfo = {
-        firstName: getString("firstName"),
-        middleName: getString("middleName"),
-        lastName: getString("lastName"),
+        fullName: getString("fullName"),
         email: pi.email || profileData.email || "",
         phone: getString("phone"),
-        dateOfBirth: getString("dob"),
-        gender: getString("gender"),
-        nationalId: getString("nationalId"),
-        stateOfOrigin: getString("stateOfOrigin"),
-        lgaOfOrigin: getString("lgaOfOrigin"),
-        address: getString("address"),
         city: getString("city"),
-        resState: getString("resState"),
+        country: getString("country"),
+        currentStatus: getString("currentStatus"),
       };
       const { error } = await saveApplicationStep(1, personalInfo, isNext);
       if (error) {
@@ -115,66 +101,31 @@ export function PersonalInfoForm({
           <div className="flex items-center gap-2.5 px-5 py-3 bg-muted/30 border-b border-border/50">
             <Info className="h-3.5 w-3.5 text-primary shrink-0" />
             <p className="text-xs text-muted-foreground">
-              All fields marked * are required. Ensure all information matches
-              your official identification.
+              All fields marked * are required.
             </p>
           </div>
 
           <div className="p-5 space-y-7">
-            {/* Full Name */}
+            {/* Basic Details */}
             <div>
               <div className="flex items-center gap-2 mb-4 pb-2.5 border-b border-border/50">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Full Name
-                </span>
-              </div>
-              <div className="grid sm:grid-cols-3 gap-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="firstName" className="text-xs">
-                    First Name *
-                  </Label>
-                  <Input
-                    id="firstName"
-                    name="firstName"
-                    className="h-9 text-sm"
-                    defaultValue={pi.firstName || profileData.first_name || ""}
-                    required
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="middleName" className="text-xs">
-                    Middle Name
-                  </Label>
-                  <Input
-                    id="middleName"
-                    name="middleName"
-                    className="h-9 text-sm"
-                    defaultValue={pi.middleName || ""}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="lastName" className="text-xs">
-                    Last Name / Surname *
-                  </Label>
-                  <Input
-                    id="lastName"
-                    name="lastName"
-                    className="h-9 text-sm"
-                    defaultValue={pi.lastName || profileData.last_name || ""}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Contact Details */}
-            <div>
-              <div className="flex items-center gap-2 mb-4 pb-2.5 border-b border-border/50">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Contact Details
+                  Basic Details
                 </span>
               </div>
               <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5 sm:col-span-2">
+                  <Label htmlFor="fullName" className="text-xs">
+                    Full Name *
+                  </Label>
+                  <Input
+                    id="fullName"
+                    name="fullName"
+                    className="h-9 text-sm"
+                    defaultValue={defaultFullName}
+                    required
+                  />
+                </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="email" className="text-xs">
                     Email Address *
@@ -203,158 +154,66 @@ export function PersonalInfoForm({
               </div>
             </div>
 
-            {/* Personal Details */}
+            {/* Current Location */}
             <div>
               <div className="flex items-center gap-2 mb-4 pb-2.5 border-b border-border/50">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Personal Details
-                </span>
-              </div>
-              <div className="grid sm:grid-cols-3 gap-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="dob" className="text-xs">
-                    Date of Birth *
-                  </Label>
-                  <Input
-                    id="dob"
-                    name="dob"
-                    type="date"
-                    className="h-9 text-sm"
-                    defaultValue={pi.dateOfBirth || ""}
-                    required
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="gender" className="text-xs">
-                    Gender *
-                  </Label>
-                  <Select name="gender" defaultValue={pi.gender?.toLowerCase()}>
-                    <SelectTrigger id="gender" className="h-9 text-sm">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="female">Female</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="national-id" className="text-xs">
-                    NIN / National ID *
-                  </Label>
-                  <Input
-                    id="national-id"
-                    name="nationalId"
-                    className="h-9 text-sm"
-                    defaultValue={pi.nationalId || ""}
-                    placeholder="11-digit NIN"
-                    maxLength={11}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* State of Origin */}
-            <div>
-              <div className="flex items-center gap-2 mb-4 pb-2.5 border-b border-border/50">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  State of Origin
+                  Current Location
                 </span>
               </div>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label htmlFor="state" className="text-xs">
-                    State of Origin *
-                  </Label>
-                  <Select
-                    name="stateOfOrigin"
-                    defaultValue={
-                      pi.stateOfOrigin || profileData.state_of_origin || undefined
-                    }
-                  >
-                    <SelectTrigger id="state" className="h-9 text-sm">
-                      <SelectValue placeholder="Select state" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {nigerianStates.map((s) => (
-                        <SelectItem key={s} value={s}>
-                          {s}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="lga" className="text-xs">
-                    LGA of Origin *
+                  <Label htmlFor="city" className="text-xs">
+                    City *
                   </Label>
                   <Input
-                    id="lga"
-                    name="lgaOfOrigin"
+                    id="city"
+                    name="city"
                     className="h-9 text-sm"
-                    defaultValue={pi.lgaOfOrigin || ""}
-                    placeholder="Enter your LGA"
+                    defaultValue={pi.city || ""}
+                    placeholder="City"
+                    required
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="country" className="text-xs">
+                    Country *
+                  </Label>
+                  <Input
+                    id="country"
+                    name="country"
+                    className="h-9 text-sm"
+                    defaultValue={pi.country || ""}
+                    placeholder="Country"
                     required
                   />
                 </div>
               </div>
             </div>
 
-            {/* Residential Address */}
+            {/* Current Status */}
             <div>
               <div className="flex items-center gap-2 mb-4 pb-2.5 border-b border-border/50">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Residential Address
+                  Current Status
                 </span>
               </div>
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="address" className="text-xs">
-                    Street Address *
-                  </Label>
-                  <Input
-                    id="address"
-                    name="address"
-                    className="h-9 text-sm"
-                    defaultValue={pi.address || ""}
-                    placeholder="House number, street name"
-                    required
-                  />
-                </div>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="city" className="text-xs">
-                      City *
-                    </Label>
-                    <Input
-                      id="city"
-                      name="city"
-                      className="h-9 text-sm"
-                      defaultValue={pi.city || ""}
-                      placeholder="City"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="res-state" className="text-xs">
-                      State of Residence *
-                    </Label>
-                    <Select name="resState" defaultValue={pi.resState}>
-                      <SelectTrigger id="res-state" className="h-9 text-sm">
-                        <SelectValue placeholder="Select state" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {nigerianStates.map((s) => (
-                          <SelectItem key={s} value={s}>
-                            {s}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+              <div className="space-y-1.5 sm:max-w-xs">
+                <Label htmlFor="currentStatus" className="text-xs">
+                  What best describes you right now? *
+                </Label>
+                <Select name="currentStatus" defaultValue={pi.currentStatus}>
+                  <SelectTrigger id="currentStatus" className="h-9 text-sm">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currentStatusOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>

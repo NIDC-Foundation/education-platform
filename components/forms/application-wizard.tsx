@@ -4,25 +4,23 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 import { ApplicationStepper } from "@/components/forms/application-stepper";
-import { AcademicBackgroundForm } from "@/components/forms/academic-background-form";
-import { EssayForm } from "@/components/forms/essay-form";
-import { DocumentUploadForm } from "@/components/forms/document-upload-form";
+import { DirectionFocusForm } from "@/components/forms/direction-focus-form";
+import { ThinkingForm } from "@/components/forms/thinking-form";
+import { CommitmentForm } from "@/components/forms/commitment-form";
+import { RealityCheckForm } from "@/components/forms/reality-check-form";
 import { ApplicationReview } from "@/components/forms/application-review";
 
 import { applicationSteps } from "@/constants/application";
 import { PersonalInfoForm } from "@/components/forms/personal-info-form";
-import type { UploadedDocument } from "@/types";
 
 interface ApplicationWizardProps {
   application: Record<string, unknown>;
   profile: Record<string, unknown>;
-  documents: UploadedDocument[];
 }
 
 export function ApplicationWizard({
   application,
   profile,
-  documents,
 }: ApplicationWizardProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [direction, setDirection] = useState<"forward" | "back">("forward");
@@ -58,7 +56,7 @@ export function ApplicationWizard({
 
   const next = () => {
     setDirection("forward");
-    setCurrentStep((s) => Math.min(s + 1, 5));
+    setCurrentStep((s) => Math.min(s + 1, 6));
   };
 
   const prev = () => {
@@ -83,7 +81,7 @@ export function ApplicationWizard({
         );
       case 2:
         return (
-          <AcademicBackgroundForm
+          <DirectionFocusForm
             application={application}
             onNext={next}
             onBack={prev}
@@ -91,22 +89,29 @@ export function ApplicationWizard({
         );
       case 3:
         return (
-          <EssayForm application={application} onNext={next} onBack={prev} />
+          <ThinkingForm application={application} onNext={next} onBack={prev} />
         );
       case 4:
         return (
-          <DocumentUploadForm
-            documents={documents}
+          <CommitmentForm
+            application={application}
             onNext={next}
             onBack={prev}
           />
         );
       case 5:
         return (
+          <RealityCheckForm
+            application={application}
+            onNext={next}
+            onBack={prev}
+          />
+        );
+      case 6:
+        return (
           <ApplicationReview
             application={application}
             profile={profile}
-            documents={documents}
             onBack={prev}
             onEdit={goToStep}
           />

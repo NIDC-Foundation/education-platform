@@ -363,7 +363,7 @@ function normalizeAdminApplicationRecord<T>(application: T): T {
     }
 
     const source = application as Record<string, unknown>;
-    const programChoice = (source.programChoice || source.program_choice || getProgramChoiceFromAcademicBackground(source.academic_background)) as string | null;
+    const programChoice = (source.programChoice || source.program_choice || getAreaOfInterestFromDirectionFocus(source.academic_background)) as string | null;
     const normalizedPrograms =
         source.programs && typeof source.programs === "object"
             ? normalizeProgramRecord(source.programs)
@@ -413,13 +413,13 @@ const REVIEW_COMPLETED_STATUSES = new Set<ApplicationStatus>([
 
 const ACCEPTED_APPLICATION_STATUSES = new Set<ApplicationStatus>(["accepted"]);
 
-function getProgramChoiceFromAcademicBackground(value: unknown): string | null {
+function getAreaOfInterestFromDirectionFocus(value: unknown): string | null {
     if (!value || typeof value !== "object") {
         return null;
     }
 
     const source = value as Record<string, unknown>;
-    return getTrimmedString(source.programChoice);
+    return getTrimmedString(source.areaOfInterest);
 }
 
 function normalizeComparisonText(value: unknown): string {
@@ -1389,7 +1389,7 @@ export async function getApplicantDashboardData(userId: string) {
             : null;
     const programName =
         getProgramName(normalizedProgram) ||
-        (applicationData?.programChoice || applicationData?.program_choice || getProgramChoiceFromAcademicBackground(applicationData?.academic_background));
+        (applicationData?.programChoice || applicationData?.program_choice || getAreaOfInterestFromDirectionFocus(applicationData?.academic_background));
 
     const application = applicationData
         ? {
@@ -1554,7 +1554,7 @@ export async function submitApplication(): Promise<{ error: string | null }> {
 
     const selection = await resolveProgramAndCohortSelection(
         supabase,
-        getProgramChoiceFromAcademicBackground(application.academic_background)
+        getAreaOfInterestFromDirectionFocus(application.academic_background)
     );
     const shouldSyncProgramSelection =
         (selection.programId !== null && selection.programId !== application.program_id) ||
@@ -1715,7 +1715,12 @@ export async function deleteApplicationDocument(documentId: string): Promise<{ e
     return { error: null };
 }
 
-type ApplicationStepColumn = "personal_info" | "academic_background" | "essays";
+type ApplicationStepColumn =
+    | "personal_info"
+    | "academic_background"
+    | "essays"
+    | "commitment"
+    | "reality_check";
 
 export async function saveApplicationStep(
     step: number,
@@ -1726,6 +1731,8 @@ export async function saveApplicationStep(
         1: "personal_info",
         2: "academic_background",
         3: "essays",
+        4: "commitment",
+        5: "reality_check",
     };
 
     const stepColumn = stepColumnMap[step];
@@ -1753,10 +1760,14 @@ export async function saveApplicationStep(
             profileUpdatePayload[profileKey] = rawValue.trim();
         };
 
-        addIfPresentString("firstName", "first_name");
-        addIfPresentString("lastName", "last_name");
+        if (typeof stepData.fullName === "string") {
+            const fullName = stepData.fullName.trim();
+            const [firstName, ...rest] = fullName.split(/\s+/).filter(Boolean);
+            profileUpdatePayload.first_name = firstName || "";
+            profileUpdatePayload.last_name = rest.join(" ");
+        }
+
         addIfPresentString("phone", "phone");
-        addIfPresentString("stateOfOrigin", "state_of_origin");
 
         if (Object.keys(profileUpdatePayload).length > 0) {
             const { error: profileUpdateError } = await supabase
@@ -1795,7 +1806,7 @@ export async function saveApplicationStep(
     if (step === 2) {
         const programSelection = await resolveProgramAndCohortSelection(
             supabase,
-            getProgramChoiceFromAcademicBackground(stepData)
+            getAreaOfInterestFromDirectionFocus(stepData)
         );
 
         payload.program_id = programSelection.programId;

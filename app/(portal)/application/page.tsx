@@ -19,7 +19,7 @@ export default async function StartApplicationPage() {
     redirect("/login");
   }
 
-  const { application, profile, documents } = await getApplicantDashboardData(user.id);
+  const { application, profile } = await getApplicantDashboardData(user.id);
   const resolvedProfile = profile ?? buildProfileFallback(user);
 
   const status = application?.status || "draft";
@@ -68,7 +68,6 @@ export default async function StartApplicationPage() {
         <ApplicationWizard
           application={application}
           profile={resolvedProfile}
-          documents={documents}
         />
       </div>
     </PageContainer>

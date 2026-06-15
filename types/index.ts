@@ -64,36 +64,33 @@ export interface Applicant {
 }
 
 export interface PersonalInfo {
-    firstName: string;
-    lastName: string;
+    fullName: string;
     email: string;
     phone: string;
-    dateOfBirth: string;
-    gender: string;
-    stateOfOrigin: string;
-    lgaOfOrigin: string;
-    address: string;
     city: string;
-    nationalId: string;
+    country: string;
+    currentStatus: "student" | "graduate" | "working";
 }
 
-export interface AcademicBackground {
-    secondarySchool: string;
-    waecYear: string;
-    waecGrade: string;
-    jambScore: string;
-    jambYear: string;
-    institution: string;
-    course: string;
-    programType: "undergraduate" | "postgraduate";
-    currentYear?: string;
+export interface DirectionFocus {
+    areaOfInterest: string;
+    whyThisArea: string;
 }
 
-export interface EssaySubmission {
-    whyApply: string;
-    nationalContribution: string;
-    leadershipExample: string;
-    careerGoals: string;
+export interface ThinkingResponses {
+    biggestProblem: string;
+    recentGrowth: string;
+}
+
+export interface CommitmentResponse {
+    whyJoin: string;
+    commitmentTypes: ("time" | "long_term" | "effort")[];
+    weeklyHours?: string;
+}
+
+export interface RealityCheckResponse {
+    firstBuild: string;
+    readyForCommitment: "yes" | "no";
 }
 
 export interface UploadedDocument {
@@ -117,9 +114,10 @@ export interface Application {
     currentStep: number;
     programChoice: string;
     personalInfo?: Partial<PersonalInfo>;
-    academicBackground?: Partial<AcademicBackground>;
-    essays?: Partial<EssaySubmission>;
-    documents?: UploadedDocument[];
+    directionFocus?: Partial<DirectionFocus>;
+    thinking?: Partial<ThinkingResponses>;
+    commitment?: Partial<CommitmentResponse>;
+    realityCheck?: Partial<RealityCheckResponse>;
     submittedAt?: string;
     lastSavedAt: string;
     createdAt: string;

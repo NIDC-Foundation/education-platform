@@ -57,7 +57,7 @@ export default function Navbar() {
       <nav className="w-full border-b border-border/50 bg-background/95 backdrop-blur-sm sticky top-0 z-50 px-4 sm:px-8">
         <div className="mx-auto flex items-center justify-between py-3 gap-4">
           <Link href="/">
-            <Image src={`/images/logo.png`} width={150} height={10} alt=""/>
+            <Image src={`/images/logo.png`} width={100} height={10} alt=""/>
           </Link>
 
           <div className="hidden md:flex items-center gap-1">

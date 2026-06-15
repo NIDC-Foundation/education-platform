@@ -3,15 +3,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   ArrowLeft,
   AlertCircle,
   FileText,
-  GraduationCap,
-  ScrollText,
-  Upload,
+  Target,
+  Brain,
+  HeartHandshake,
+  Hammer,
   Edit,
   Send,
   type LucideIcon,
@@ -20,10 +20,13 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { submitApplication } from "@/lib/supabase/actions";
+import { commitmentOptions } from "@/constants/application";
 import type {
-  AcademicBackground,
-  EssaySubmission,
-  UploadedDocument,
+  PersonalInfo,
+  DirectionFocus,
+  ThinkingResponses,
+  CommitmentResponse,
+  RealityCheckResponse,
 } from "@/types";
 
 type ReviewProfile = {
@@ -31,25 +34,21 @@ type ReviewProfile = {
   last_name?: string | null;
   email?: string | null;
   phone?: string | null;
-  date_of_birth?: string | null;
-  gender?: string | null;
-  national_id?: string | null;
-  state_of_origin?: string | null;
-  lga_of_origin?: string | null;
-  address?: string | null;
 };
 
 type ReviewApplication = {
   program_id?: string | null;
   program_name?: string | null;
-  academic_background?: Partial<AcademicBackground> | null;
-  essays?: Partial<EssaySubmission> | null;
+  personal_info?: Partial<PersonalInfo> | null;
+  academic_background?: Partial<DirectionFocus> | null;
+  essays?: Partial<ThinkingResponses> | null;
+  commitment?: Partial<CommitmentResponse> | null;
+  reality_check?: Partial<RealityCheckResponse> | null;
 };
 
 interface ApplicationReviewProps {
   profile: ReviewProfile | null;
   application: ReviewApplication | null;
-  documents: UploadedDocument[];
   onBack?: () => void;
   onEdit?: (step: number) => void;
 }
@@ -111,6 +110,23 @@ function InfoRow({ label, value }: { label: string; value?: string }) {
   );
 }
 
+function TextBlock({ label, value }: { label: string; value?: string }) {
+  return (
+    <div>
+      <p className="text-xs text-muted-foreground mb-1">{label}</p>
+      {value ? (
+        <p className="text-sm text-foreground/80 bg-muted/30 p-3 rounded-lg border leading-relaxed whitespace-pre-wrap">
+          {value}
+        </p>
+      ) : (
+        <div className="flex items-center gap-2 text-amber-600 text-xs">
+          <AlertCircle className="h-3.5 w-3.5" /> Not completed
+        </div>
+      )}
+    </div>
+  );
+}
+
 function toOptionalString(value?: string | null) {
   return value ?? undefined;
 }
@@ -118,7 +134,6 @@ function toOptionalString(value?: string | null) {
 export function ApplicationReview({
   profile,
   application,
-  documents,
   onBack,
   onEdit,
 }: ApplicationReviewProps) {
@@ -150,8 +165,36 @@ export function ApplicationReview({
   };
 
   const pi: ReviewProfile = profile ?? {};
-  const ab: Partial<AcademicBackground> = application?.academic_background ?? {};
-  const essays: Partial<EssaySubmission> = application?.essays ?? {};
+  const personalInfo: Partial<PersonalInfo> = application?.personal_info ?? {};
+  const directionFocus: Partial<DirectionFocus> =
+    application?.academic_background ?? {};
+  const thinking: Partial<ThinkingResponses> = application?.essays ?? {};
+  const commitment: Partial<CommitmentResponse> = application?.commitment ?? {};
+  const realityCheck: Partial<RealityCheckResponse> =
+    application?.reality_check ?? {};
+
+  const location = [personalInfo.city, personalInfo.country]
+    .filter(Boolean)
+    .join(", ");
+
+  const currentStatusLabel = personalInfo.currentStatus
+    ? personalInfo.currentStatus.charAt(0).toUpperCase() +
+      personalInfo.currentStatus.slice(1)
+    : undefined;
+
+  const commitmentTypeLabels = (commitment.commitmentTypes ?? [])
+    .map(
+      (value) => commitmentOptions.find((opt) => opt.value === value)?.label
+    )
+    .filter(Boolean)
+    .join(", ");
+
+  const readyForCommitmentLabel =
+    realityCheck.readyForCommitment === "yes"
+      ? "Yes"
+      : realityCheck.readyForCommitment === "no"
+        ? "No"
+        : undefined;
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -168,9 +211,9 @@ export function ApplicationReview({
         </div>
       </div>
 
-      {/* Personal Info Review */}
+      {/* Basic Info Review */}
       <ReviewSection
-        title="Personal Information"
+        title="Basic Info"
         icon={FileText}
         editStep={1}
         onEdit={onEdit}
@@ -178,148 +221,101 @@ export function ApplicationReview({
         <div className="space-y-3">
           <InfoRow
             label="Full Name"
-            value={
-              [pi.first_name, pi.last_name].filter(Boolean).join(" ") ||
-              undefined
-            }
+            value={toOptionalString(personalInfo.fullName)}
+          />
+          <InfoRow
+            label="Email Address"
+            value={toOptionalString(personalInfo.email ?? pi.email)}
+          />
+          <InfoRow
+            label="Phone Number"
+            value={toOptionalString(personalInfo.phone ?? pi.phone)}
           />
           <Separator />
-          <InfoRow label="Email Address" value={toOptionalString(pi.email)} />
-          <InfoRow label="Phone Number" value={toOptionalString(pi.phone)} />
-          <Separator />
-          <InfoRow
-            label="Date of Birth"
-            value={toOptionalString(pi.date_of_birth)}
-          />
-          <InfoRow label="Gender" value={toOptionalString(pi.gender)} />
-          <InfoRow label="NIN" value={toOptionalString(pi.national_id)} />
-          <Separator />
-          <InfoRow
-            label="State of Origin"
-            value={toOptionalString(pi.state_of_origin)}
-          />
-          <InfoRow
-            label="LGA of Origin"
-            value={toOptionalString(pi.lga_of_origin)}
-          />
-          <InfoRow
-            label="Residential Address"
-            value={toOptionalString(pi.address)}
-          />
+          <InfoRow label="Current Location" value={location || undefined} />
+          <InfoRow label="Current Status" value={currentStatusLabel} />
         </div>
       </ReviewSection>
 
-      {/* Academic Review */}
+      {/* Direction & Focus Review */}
       <ReviewSection
-        title="Academic Background"
-        icon={GraduationCap}
+        title="Direction & Focus"
+        icon={Target}
         editStep={2}
         onEdit={onEdit}
       >
-        <div className="space-y-3">
+        <div className="space-y-4">
           <InfoRow
-            label="Preferred Programme"
-            value={toOptionalString(application?.program_name)}
+            label="Area of Interest"
+            value={toOptionalString(directionFocus.areaOfInterest)}
           />
-          <Separator />
-          <InfoRow label="Secondary School" value={ab.secondarySchool} />
-          <InfoRow
-            label="WAEC Year / Grade"
-            value={
-              ab.waecYear && ab.waecGrade
-                ? `${ab.waecYear} — ${ab.waecGrade}`
-                : undefined
-            }
+          <TextBlock
+            label="Why this area?"
+            value={directionFocus.whyThisArea}
           />
-          <InfoRow
-            label="JAMB Score"
-            value={
-              ab.jambScore != null && ab.jambYear
-                ? `${ab.jambScore} (${ab.jambYear})`
-                : undefined
-            }
-          />
-          <Separator />
-          <InfoRow label="Institution" value={ab.institution} />
-          <InfoRow label="Course" value={ab.course} />
-          <InfoRow label="Year" value={ab.currentYear} />
         </div>
       </ReviewSection>
 
-      {/* Essays Review */}
+      {/* Thinking Review */}
       <ReviewSection
-        title="Essays"
-        icon={ScrollText}
+        title="Thinking"
+        icon={Brain}
         editStep={3}
         onEdit={onEdit}
       >
         <div className="space-y-4">
-          {[
-            { label: "Why are you applying?", value: essays.whyApply },
-            {
-              label: "Your Vision for National Contribution",
-              value: essays.nationalContribution,
-            },
-            {
-              label: "Demonstrated Leadership",
-              value: essays.leadershipExample,
-            },
-            { label: "Long-Term Goals", value: essays.careerGoals },
-          ].map((essay, i) => (
-            <div key={i}>
-              <p className="text-xs text-muted-foreground mb-1">
-                {essay.label}
-              </p>
-              {essay.value ? (
-                <p className="text-sm line-clamp-3 text-foreground/80 bg-muted/30 p-3 rounded-lg border leading-relaxed">
-                  {essay.value}
-                </p>
-              ) : (
-                <div className="flex items-center gap-2 text-amber-600 text-xs">
-                  <AlertCircle className="h-3.5 w-3.5" /> Not completed
-                </div>
-              )}
-              {i < 3 && <Separator className="mt-4" />}
-            </div>
-          ))}
+          <TextBlock
+            label="What do you think is the biggest problem holding back capable people in Nigeria?"
+            value={thinking.biggestProblem}
+          />
+          <Separator />
+          <TextBlock
+            label="What have you done in the last 6–12 months to improve yourself?"
+            value={thinking.recentGrowth}
+          />
         </div>
       </ReviewSection>
 
-      {/* Documents Review */}
+      {/* Commitment Review */}
       <ReviewSection
-        title="Documents"
-        icon={Upload}
+        title="Commitment"
+        icon={HeartHandshake}
         editStep={4}
         onEdit={onEdit}
       >
-        <div className="space-y-2">
-          {documents.length > 0 ? (
-            documents.map((doc) => (
-              <div
-                key={doc.id}
-                className="flex items-center gap-3 p-3 rounded-lg bg-muted/20"
-              >
-                <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
-                <span className="text-sm flex-1 truncate">{doc.name}</span>
-                <Badge
-                  variant="outline"
-                  className={`text-[10px] capitalize shrink-0 ${doc.status === "verified"
-                    ? "border-emerald-300 text-emerald-700 bg-emerald-50"
-                    : doc.status === "pending"
-                      ? "border-amber-300 text-amber-700 bg-amber-50"
-                      : "border-red-300 text-red-700 bg-red-50"
-                    }`}
-                >
-                  {doc.status}
-                </Badge>
-              </div>
-            ))
-          ) : (
-            <div className="flex items-center gap-2 text-amber-600 text-xs text-center py-4 bg-amber-50 rounded-lg border border-amber-100">
-              <AlertCircle className="h-3.5 w-3.5 shrink-0 ml-auto" />
-              <span className="mr-auto">No documents uploaded yet</span>
-            </div>
+        <div className="space-y-4">
+          <TextBlock label="Why do you want to be part of this system?" value={commitment.whyJoin} />
+          <Separator />
+          <InfoRow
+            label="Willing to Commit"
+            value={commitmentTypeLabels || undefined}
+          />
+          {commitment.commitmentTypes?.includes("time") && (
+            <InfoRow
+              label="Weekly Hours"
+              value={toOptionalString(commitment.weeklyHours)}
+            />
           )}
+        </div>
+      </ReviewSection>
+
+      {/* Reality Check Review */}
+      <ReviewSection
+        title="Reality Check"
+        icon={Hammer}
+        editStep={5}
+        onEdit={onEdit}
+      >
+        <div className="space-y-4">
+          <TextBlock
+            label="If you were asked to build something small today in your area of interest, what would you start with?"
+            value={realityCheck.firstBuild}
+          />
+          <Separator />
+          <InfoRow
+            label="Ready for long-term commitment?"
+            value={readyForCommitmentLabel}
+          />
         </div>
       </ReviewSection>
 
@@ -357,12 +353,12 @@ export function ApplicationReview({
       <div className="flex flex-col sm:flex-row justify-between gap-4 pb-8">
         {onBack ? (
           <Button variant="outline" className="gap-2 w-full sm:w-auto" onClick={onBack}>
-            <ArrowLeft className="h-4 w-4" /> Back to Documents
+            <ArrowLeft className="h-4 w-4" /> Back to Reality Check
           </Button>
         ) : (
-          <Link href="/application/step-4">
+          <Link href="/application/step-5">
             <Button variant="outline" className="gap-2 w-full sm:w-auto">
-              <ArrowLeft className="h-4 w-4" /> Back to Documents
+              <ArrowLeft className="h-4 w-4" /> Back to Reality Check
             </Button>
           </Link>
         )}
