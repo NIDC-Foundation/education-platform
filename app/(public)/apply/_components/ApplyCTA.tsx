@@ -65,7 +65,7 @@ export default function ApplyCTA() {
           </h2>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-            <Link href="/apply/form" className="w-full sm:w-auto">
+            <Link href="/application" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 h-14 px-8 rounded-full text-base font-semibold shadow-[0_10px_30px_rgba(22,46,32,0.2)] transition-transform hover:-translate-y-1">
                 Apply Now <ArrowRight className="ml-2 w-5 h-5" />
               </Button>

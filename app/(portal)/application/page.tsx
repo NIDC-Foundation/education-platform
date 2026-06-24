@@ -16,7 +16,7 @@ export default async function StartApplicationPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/login?next=/application");
   }
 
   const { application, profile } = await getApplicantDashboardData(user.id);
