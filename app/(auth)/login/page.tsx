@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { Suspense } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -27,8 +28,10 @@ const loginSchema = z.object({
 type LoginValues = z.infer<typeof loginSchema>;
 
 // ── Component ─────────────────────────────────────────────────────────────────
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get("next");
 
   const {
     control,
@@ -63,7 +66,6 @@ export default function LoginPage() {
       }
 
       const role = await resolveUserRoleForSession(supabase, data.user);
-      const nextPath = new URLSearchParams(window.location.search).get("next");
       const redirectPath = getSafePostLoginRedirectPath(nextPath, role);
 
       toast.success("Welcome back!", {
@@ -222,7 +224,11 @@ export default function LoginPage() {
             <p className="text-xs text-muted-foreground">
               No account?{" "}
               <Link
-                href="/signup"
+                href={
+                  nextPath
+                    ? `/signup?next=${encodeURIComponent(nextPath)}`
+                    : "/signup"
+                }
                 className="text-foreground font-semibold hover:underline"
               >
                 Create one
@@ -243,5 +249,19 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          <p className="text-sm text-muted-foreground">Loading...</p>
+        </div>
+      }
+    >
+      <LoginPageContent />
+    </Suspense>
   );
 }

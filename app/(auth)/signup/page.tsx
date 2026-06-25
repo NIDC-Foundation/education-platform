@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowRight,
   CircleAlert,
@@ -22,7 +22,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
 
-import { getDefaultRedirectPath, getRoleForIntent } from "@/lib/auth/roles";
+import {
+  getDefaultRedirectPath,
+  getRoleForIntent,
+  getSafePostLoginRedirectPath,
+} from "@/lib/auth/roles";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { FormField } from "@/components/forms/form-field";
 
@@ -58,6 +62,8 @@ type SignupValues = z.infer<typeof signupSchema>;
 // ── Inner component ───────────────────────────────────────────────────────────
 function SignupPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get("next");
 
   const [successMessage, setSuccessMessage] = React.useState<string | null>(
     null
@@ -120,7 +126,8 @@ function SignupPageContent() {
         toast.success("Account created!", {
           description: "Welcome to the National Talent Initiative.",
         });
-        router.replace(getDefaultRedirectPath(role));
+        const redirectPath = getSafePostLoginRedirectPath(nextPath, role);
+        router.replace(redirectPath);
         router.refresh();
         return;
       }
@@ -130,7 +137,9 @@ function SignupPageContent() {
         "Account created. Check your email to confirm your address before signing in.";
       toast.success("Success!", { description: msg });
 
-      router.replace("/login");
+      router.replace(
+        nextPath ? `/login?next=${encodeURIComponent(nextPath)}` : "/login"
+      );
     } catch (err) {
       const msg =
         err instanceof Error
@@ -324,7 +333,11 @@ function SignupPageContent() {
           <p className="text-xs text-muted-foreground">
             Already have an account?{" "}
             <Link
-              href="/login"
+              href={
+                nextPath
+                  ? `/login?next=${encodeURIComponent(nextPath)}`
+                  : "/login"
+              }
               className="text-foreground font-semibold hover:underline"
             >
               Sign in
