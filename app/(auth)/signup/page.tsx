@@ -98,6 +98,9 @@ function SignupPageContent() {
         email: values.email,
         password: values.password,
         options: {
+          emailRedirectTo: `${window.location.origin}/login${
+            nextPath ? `?next=${encodeURIComponent(nextPath)}` : ""
+          }`,
           data: {
             first_name: values.firstName,
             last_name: values.lastName,
