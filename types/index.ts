@@ -306,3 +306,29 @@ export interface Announcement {
     isPinned: boolean;
     audience: "all" | "scholars" | "reviewers" | "applicants";
 }
+
+export type MessageThreadOwnerRole = "scholar" | "donor";
+
+export interface MessageThreadSummary {
+    id: string;
+    category: string;
+    subject: string | null;
+    status: string;
+    lastMessageAt: string;
+    createdAt: string;
+    unreadCount: number;
+    lastMessage: string | null;
+    lastMessageSenderRole: UserRole | null;
+    ownerId: string;
+    ownerRole: MessageThreadOwnerRole;
+    ownerName?: string;
+}
+
+export interface ThreadMessage {
+    id: string;
+    threadId: string;
+    senderId: string;
+    senderRole: UserRole;
+    body: string;
+    createdAt: string;
+}

@@ -98,9 +98,6 @@ function SignupPageContent() {
         email: values.email,
         password: values.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/login${
-            nextPath ? `?next=${encodeURIComponent(nextPath)}` : ""
-          }`,
           data: {
             first_name: values.firstName,
             last_name: values.lastName,
@@ -112,8 +109,18 @@ function SignupPageContent() {
       });
 
       if (error) {
-        setError("root", { message: error.message });
-        toast.error("Signup failed", { description: error.message });
+        const isRateLimit =
+          error.status === 429 ||
+          error.message.toLowerCase().includes("rate limit") ||
+          error.message.toLowerCase().includes("too many requests");
+        const msg = isRateLimit
+          ? "Supabase email rate limit reached (~3 confirmation emails/hr on default provider). Please wait an hour, or temporarily disable 'Confirm email' in Supabase Dashboard > Authentication > Providers > Email."
+          : error.message;
+
+        setError("root", { message: msg });
+        toast.error(isRateLimit ? "Rate limit reached" : "Signup failed", {
+          description: msg,
+        });
         return;
       }
 

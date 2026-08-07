@@ -52,8 +52,18 @@ function LoginPageContent() {
       });
 
       if (error) {
-        setError("root", { message: error.message });
-        toast.error("Sign-in failed", { description: error.message });
+        const isRateLimit =
+          error.status === 429 ||
+          error.message.toLowerCase().includes("rate limit") ||
+          error.message.toLowerCase().includes("too many requests");
+        const msg = isRateLimit
+          ? "Too many sign-in attempts. Please wait a few minutes before trying again."
+          : error.message;
+
+        setError("root", { message: msg });
+        toast.error(isRateLimit ? "Too many attempts" : "Sign-in failed", {
+          description: msg,
+        });
         return;
       }
 

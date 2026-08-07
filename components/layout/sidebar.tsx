@@ -153,6 +153,7 @@ const roleSections = {
         { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
         { href: "/admin/applications", icon: FileText, label: "Applications" },
         { href: "/admin/scholars", icon: Users, label: "Scholars" },
+        { href: "/admin/messages", icon: Mail, label: "Messages" },
       ],
     },
     {

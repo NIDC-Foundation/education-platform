@@ -294,96 +294,14 @@ export const annualReports = [
     }
 ];
 
-export const donorMessages = [
-    {
-        id: "msg-1",
-        participant: "Programme Office",
-        role: "Scholar Management",
-        unreadCount: 1,
-        lastMessage: "The Q1 progress reports for your sponsored scholars are now available for review.",
-        timestamp: "2h ago",
-        messages: [
-            {
-                id: "m1",
-                sender: "Programme Office",
-                time: "Yesterday, 10:45 AM",
-                body: "Hello, we've just uploaded the latest performance metrics for the 2025 cohort. You'll notice a significant uptick in the research output."
-            },
-            {
-                id: "m2",
-                sender: "Crescent Impact Fund",
-                time: "Yesterday, 2:30 PM",
-                body: "Thank you for the update. We're particularly interested in the STEM Leadership track progress. Can we expect a detailed breakdown by next week?"
-            },
-            {
-                id: "m3",
-                sender: "Programme Office",
-                time: "2h ago",
-                body: "Absolutely. I'll ensure the leadership focus metrics are included in the transparency packet we're preparing for you."
-            }
-        ]
-    },
-    {
-        id: "msg-2",
-        participant: "Finance Operations",
-        role: "Treasury & Disbursement",
-        unreadCount: 0,
-        lastMessage: "The secondary disbursement for your tech-focused portfolio has been processed.",
-        timestamp: "Jan 10",
-        messages: [
-            {
-                id: "m4",
-                sender: "Finance Operations",
-                time: "Jan 10, 9:20 AM",
-                body: "We've confirmed the receipt of the Q1 commitment funds. The allocation to the respective scholars' stipends has been initiated."
-            }
-        ]
-    }
-];
+export const SCHOLAR_MESSAGE_CATEGORIES = [
+    { value: "academic_support", label: "Academic Support" },
+    { value: "finance", label: "Finance" },
+    { value: "general", label: "General" },
+] as const;
 
-export const scholarMessages = [
-    {
-        id: "msg-s1",
-        participant: "Programme Mentor",
-        role: "Academic Support",
-        unreadCount: 2,
-        lastMessage: "Please review the feedback on your latest progress report.",
-        timestamp: "1h ago",
-        messages: [
-            {
-                id: "sm1",
-                sender: "Programme Mentor",
-                time: "Yesterday, 09:15 AM",
-                body: "Hi! I noticed your capstone research methodology draft was submitted. Let's schedule a call to review the approach."
-            },
-            {
-                id: "sm2",
-                sender: "You",
-                time: "Yesterday, 11:30 AM",
-                body: "Thank you for letting me know. I am available tomorrow afternoon from 2 PM to 4 PM."
-            },
-            {
-                id: "sm3",
-                sender: "Programme Mentor",
-                time: "1h ago",
-                body: "Great! Let's do 3 PM. Also, please review the feedback on your latest progress report before our call."
-            }
-        ]
-    },
-    {
-        id: "msg-s2",
-        participant: "Finance Team",
-        role: "Stipends & Grants",
-        unreadCount: 0,
-        lastMessage: "Your monthly living stipend has been disbursed.",
-        timestamp: "Mar 20",
-        messages: [
-            {
-                id: "sm4",
-                sender: "Finance Team",
-                time: "Mar 20, 10:00 AM",
-                body: "Dear Scholar, your monthly living stipend for March has been disbursed. Please allow 24-48 hours for it to reflect in your account."
-            }
-        ]
-    }
-];
+export const DONOR_MESSAGE_CATEGORIES = [
+    { value: "programme_office", label: "Programme Office" },
+    { value: "finance", label: "Finance" },
+    { value: "impact_reporting", label: "Impact Reporting" },
+] as const;

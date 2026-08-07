@@ -8,7 +8,11 @@ import {
     ApplicationStatus,
     DocumentStatus,
     DocumentType,
+    MessageThreadOwnerRole,
+    MessageThreadSummary,
+    ThreadMessage,
     UploadedDocument,
+    UserRole,
 } from "@/types";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -1978,4 +1982,352 @@ export async function getAvailableCohorts() {
         programId: row.program_id,
         programName: (row.programs as { title?: string })?.title || "Unknown Program"
     }));
+}
+
+// ---------------------------------------------------------------------------
+// Messaging
+// ---------------------------------------------------------------------------
+
+interface RawMessageThreadRow {
+    id: string;
+    category: string;
+    subject: string | null;
+    status: string;
+    last_message_at: string;
+    created_at: string;
+    owner_id: string;
+    owner_role: MessageThreadOwnerRole;
+    profiles?: { first_name?: string | null; last_name?: string | null } | null;
+}
+
+interface RawMessageRow {
+    thread_id: string;
+    sender_id: string;
+    sender_role: string;
+    body: string;
+    created_at: string;
+}
+
+function getOwnerDisplayName(profile: RawMessageThreadRow["profiles"]): string | undefined {
+    if (!profile) return undefined;
+    const name = [profile.first_name, profile.last_name].filter(Boolean).join(" ").trim();
+    return name || undefined;
+}
+
+async function buildThreadSummaries(
+    supabase: ServerSupabaseClient,
+    threads: RawMessageThreadRow[],
+    currentUserId: string
+): Promise<MessageThreadSummary[]> {
+    if (threads.length === 0) return [];
+
+    const threadIds = threads.map((thread) => thread.id);
+
+    const [messagesRes, readsRes] = await Promise.all([
+        supabase
+            .from("messages")
+            .select("thread_id, sender_id, sender_role, body, created_at")
+            .in("thread_id", threadIds)
+            .order("created_at", { ascending: true }),
+        supabase
+            .from("thread_reads")
+            .select("thread_id, last_read_at")
+            .eq("user_id", currentUserId)
+            .in("thread_id", threadIds),
+    ]);
+
+    const messagesByThread = new Map<string, RawMessageRow[]>();
+    for (const message of (messagesRes.data || []) as RawMessageRow[]) {
+        const list = messagesByThread.get(message.thread_id) || [];
+        list.push(message);
+        messagesByThread.set(message.thread_id, list);
+    }
+
+    const readByThread = new Map<string, string>();
+    for (const read of (readsRes.data || []) as { thread_id: string; last_read_at: string }[]) {
+        readByThread.set(read.thread_id, read.last_read_at);
+    }
+
+    const summaries = threads.map((thread) => {
+        const threadMessages = messagesByThread.get(thread.id) || [];
+        const lastMessage = threadMessages[threadMessages.length - 1] || null;
+        const lastReadAt = readByThread.get(thread.id);
+        const unreadCount = threadMessages.filter((message) => {
+            if (message.sender_id === currentUserId) return false;
+            if (!lastReadAt) return true;
+            return new Date(message.created_at).getTime() > new Date(lastReadAt).getTime();
+        }).length;
+
+        return {
+            id: thread.id,
+            category: thread.category,
+            subject: thread.subject,
+            status: thread.status,
+            lastMessageAt: thread.last_message_at,
+            createdAt: thread.created_at,
+            unreadCount,
+            lastMessage: lastMessage?.body ?? null,
+            lastMessageSenderRole: (lastMessage?.sender_role as UserRole) ?? null,
+            ownerId: thread.owner_id,
+            ownerRole: thread.owner_role,
+            ownerName: getOwnerDisplayName(thread.profiles),
+        } satisfies MessageThreadSummary;
+    });
+
+    return summaries.sort(
+        (a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()
+    );
+}
+
+async function notifyThreadParticipants(
+    thread: { id: string; owner_id: string; owner_role: MessageThreadOwnerRole },
+    senderRole: string,
+    body: string
+): Promise<void> {
+    const preview = body.length > 140 ? `${body.slice(0, 140)}...` : body;
+    const admin = createSupabaseAdminClient();
+
+    if (senderRole === "admin" || senderRole === "reviewer" || senderRole === "partner") {
+        const ownerPath = thread.owner_role === "donor" ? "/donor/messages" : "/scholar/messages";
+        await admin.from("notifications").insert({
+            user_id: thread.owner_id,
+            title: "New message from the programme team",
+            body: preview,
+            type: "info",
+            link: `${ownerPath}?thread=${thread.id}`,
+        });
+        return;
+    }
+
+    const { data: staff } = await admin
+        .from("profiles")
+        .select("id")
+        .in("role", ["admin", "reviewer"]);
+
+    if (!staff || staff.length === 0) return;
+
+    await admin.from("notifications").insert(
+        staff.map((person) => ({
+            user_id: person.id,
+            title: "New message received",
+            body: preview,
+            type: "info",
+            link: `/admin/messages?thread=${thread.id}`,
+        }))
+    );
+}
+
+export async function getScholarMessageThreads(scholarId: string): Promise<MessageThreadSummary[]> {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from("message_threads")
+        .select("id, category, subject, status, last_message_at, created_at, owner_id, owner_role")
+        .eq("owner_id", scholarId)
+        .order("last_message_at", { ascending: false });
+
+    if (error) {
+        console.error("Error fetching scholar message threads:", formatSupabaseError(error));
+        return [];
+    }
+
+    return buildThreadSummaries(supabase, (data || []) as RawMessageThreadRow[], scholarId);
+}
+
+export async function getDonorMessageThreads(donorId: string): Promise<MessageThreadSummary[]> {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from("message_threads")
+        .select("id, category, subject, status, last_message_at, created_at, owner_id, owner_role")
+        .eq("owner_id", donorId)
+        .order("last_message_at", { ascending: false });
+
+    if (error) {
+        console.error("Error fetching donor message threads:", formatSupabaseError(error));
+        return [];
+    }
+
+    return buildThreadSummaries(supabase, (data || []) as RawMessageThreadRow[], donorId);
+}
+
+export async function getAdminMessageThreads(): Promise<MessageThreadSummary[]> {
+    const supabase = await createSupabaseServerClient();
+    await verifyAdminAccess(supabase);
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return [];
+
+    const { data, error } = await supabase
+        .from("message_threads")
+        .select("id, category, subject, status, last_message_at, created_at, owner_id, owner_role, profiles (first_name, last_name)")
+        .order("last_message_at", { ascending: false });
+
+    if (error) {
+        console.error("Error fetching admin message threads:", formatSupabaseError(error));
+        return [];
+    }
+
+    return buildThreadSummaries(supabase, (data || []) as unknown as RawMessageThreadRow[], user.id);
+}
+
+export async function getThreadMessages(threadId: string): Promise<ThreadMessage[]> {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+        .from("messages")
+        .select("id, thread_id, sender_id, sender_role, body, created_at")
+        .eq("thread_id", threadId)
+        .order("created_at", { ascending: true });
+
+    if (error) {
+        console.error("Error fetching thread messages:", formatSupabaseError(error));
+        return [];
+    }
+
+    return (data || []).map((message) => ({
+        id: message.id,
+        threadId: message.thread_id,
+        senderId: message.sender_id,
+        senderRole: message.sender_role as UserRole,
+        body: message.body,
+        createdAt: message.created_at,
+    }));
+}
+
+export async function createMessageThread(
+    category: string,
+    subject: string | null,
+    body: string
+): Promise<{ threadId: string | null; error: string | null }> {
+    const supabase = await createSupabaseServerClient();
+    const {
+        data: { user },
+        error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+        return { threadId: null, error: "You must be signed in to start a conversation." };
+    }
+
+    const role = await resolveUserRoleForSession(supabase, user);
+    if (role !== "scholar" && role !== "donor") {
+        return { threadId: null, error: "Only scholars and donors can start a new conversation." };
+    }
+
+    const sanitizedCategory = typeof category === "string" ? category.trim() : "";
+    if (!sanitizedCategory) {
+        return { threadId: null, error: "Please choose a category for this message." };
+    }
+
+    const sanitizedBody = typeof body === "string" ? body.trim() : "";
+    if (!sanitizedBody) {
+        return { threadId: null, error: "Message cannot be empty." };
+    }
+
+    const sanitizedSubject = typeof subject === "string" ? subject.trim() : "";
+
+    const { data: thread, error: threadError } = await supabase
+        .from("message_threads")
+        .insert({
+            owner_id: user.id,
+            owner_role: role,
+            category: sanitizedCategory,
+            subject: sanitizedSubject || null,
+        })
+        .select("id")
+        .single();
+
+    if (threadError || !thread) {
+        return { threadId: null, error: threadError?.message || "Unable to start conversation." };
+    }
+
+    const { error: messageError } = await supabase.from("messages").insert({
+        thread_id: thread.id,
+        sender_id: user.id,
+        sender_role: role,
+        body: sanitizedBody,
+    });
+
+    if (messageError) {
+        return { threadId: thread.id, error: messageError.message };
+    }
+
+    await markThreadRead(thread.id);
+    await notifyThreadParticipants(
+        { id: thread.id, owner_id: user.id, owner_role: role as MessageThreadOwnerRole },
+        role,
+        sanitizedBody
+    );
+
+    return { threadId: thread.id, error: null };
+}
+
+export async function sendMessage(threadId: string, body: string): Promise<{ error: string | null }> {
+    const supabase = await createSupabaseServerClient();
+    const {
+        data: { user },
+        error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+        return { error: "You must be signed in to send a message." };
+    }
+
+    const sanitizedBody = typeof body === "string" ? body.trim() : "";
+    if (!sanitizedBody) {
+        return { error: "Message cannot be empty." };
+    }
+
+    const role = await resolveUserRoleForSession(supabase, user);
+
+    const { data: thread, error: threadError } = await supabase
+        .from("message_threads")
+        .select("id, owner_id, owner_role")
+        .eq("id", threadId)
+        .maybeSingle();
+
+    if (threadError || !thread) {
+        return { error: threadError?.message || "Conversation not found." };
+    }
+
+    const { error: insertError } = await supabase.from("messages").insert({
+        thread_id: threadId,
+        sender_id: user.id,
+        sender_role: role,
+        body: sanitizedBody,
+    });
+
+    if (insertError) {
+        return { error: insertError.message };
+    }
+
+    await markThreadRead(threadId);
+    await notifyThreadParticipants(thread as { id: string; owner_id: string; owner_role: MessageThreadOwnerRole }, role, sanitizedBody);
+
+    return { error: null };
+}
+
+export async function markThreadRead(threadId: string): Promise<{ error: string | null }> {
+    const supabase = await createSupabaseServerClient();
+    const {
+        data: { user },
+        error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+        return { error: "You must be signed in." };
+    }
+
+    const { error } = await supabase
+        .from("thread_reads")
+        .upsert(
+            { thread_id: threadId, user_id: user.id, last_read_at: new Date().toISOString() },
+            { onConflict: "thread_id,user_id" }
+        );
+
+    if (error) {
+        return { error: error.message };
+    }
+
+    return { error: null };
 }
