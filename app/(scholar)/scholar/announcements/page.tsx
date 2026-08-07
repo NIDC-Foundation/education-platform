@@ -1,4 +1,6 @@
 import { PageContainer } from "@/components/layout/page-container";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Bell, Calendar, Pin } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -24,34 +26,28 @@ export default async function ScholarAnnouncementsPage() {
           list.map((a) => {
             const isPinned = a.is_pinned || a.isPinned;
             const createdAt = a.created_at || a.createdAt;
+            const authorName = a.profiles
+              ? `${a.profiles.first_name || ""} ${a.profiles.last_name || ""}`.trim()
+              : a.author || "Programme Office";
+
             return (
-              <div
+              <Card
                 key={a.id}
-                className={`border rounded-xl overflow-hidden ${
-                  isPinned ? "border-t-2 border-foreground" : "border-border/50"
-                }`}
+                className={isPinned ? "border-primary/30 bg-primary/5" : "border-border/60"}
               >
-                <div
-                  className={`px-5 py-4 ${
-                    isPinned ? "" : "border-b border-border/50 bg-muted/20"
-                  }`}
-                >
+                <CardHeader className="gap-2 pb-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2">
                       {isPinned ? (
-                        <Pin className="h-3.5 w-3.5 text-foreground shrink-0" />
+                        <Pin className="h-4 w-4 text-primary shrink-0" />
                       ) : (
-                        <Bell className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                        <Bell className="h-4 w-4 text-muted-foreground shrink-0" />
                       )}
                       <p className="text-sm font-semibold">{a.title}</p>
                     </div>
-                    {isPinned && (
-                      <span className="text-[9px] font-bold uppercase tracking-widest bg-foreground text-background rounded px-2 py-px shrink-0">
-                        Pinned
-                      </span>
-                    )}
+                    {isPinned && <Badge>Pinned</Badge>}
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-1.5 flex items-center gap-2 pl-5">
+                  <p className="flex items-center gap-2 pl-6 text-xs text-muted-foreground">
                     <Calendar className="h-3 w-3" />
                     {new Date(createdAt).toLocaleDateString("en-US", {
                       weekday: "long",
@@ -60,31 +56,29 @@ export default async function ScholarAnnouncementsPage() {
                       day: "numeric",
                     })}
                     <span className="text-muted-foreground/40">·</span>
-                    {a.profiles
-                      ? `${a.profiles.first_name || ""} ${
-                          a.profiles.last_name || ""
-                        }`.trim()
-                      : a.author || "Programme Office"}
+                    {authorName || "Programme Office"}
                   </p>
-                </div>
-                <div className="px-5 py-4">
-                  <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap text-muted-foreground">
                     {a.body}
                   </p>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             );
           })
         ) : (
-          <div className="border border-dashed border-border/50 rounded-xl flex flex-col items-center justify-center p-12 text-center">
-            <Bell className="h-7 w-7 mb-3 text-muted-foreground/30" />
-            <p className="text-sm text-muted-foreground">
-              No announcements at this time.
-            </p>
-            <p className="text-xs text-muted-foreground/60 mt-1">
-              Check back later for updates from the programme office.
-            </p>
-          </div>
+          <Card className="border-dashed border-border/60">
+            <CardContent className="flex flex-col items-center justify-center p-12 text-center">
+              <Bell className="mb-3 h-7 w-7 text-muted-foreground/30" />
+              <p className="text-sm text-muted-foreground">
+                No announcements at this time.
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground/60">
+                Check back later for updates from the programme office.
+              </p>
+            </CardContent>
+          </Card>
         )}
       </div>
     </PageContainer>

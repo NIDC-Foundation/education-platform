@@ -1,8 +1,11 @@
+import { MetricCard } from "@/components/cards/metric-card";
 import { PageContainer } from "@/components/layout/page-container";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/ui/status-badge";
 import type { BadgeStatus } from "@/components/ui/status-badge";
-import { Calendar, Flag, Target } from "lucide-react";
+import { Calendar, CheckCircle2, Clock, Flag, Target } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getScholarDashboardData } from "@/lib/supabase/actions";
 import { redirect } from "next/navigation";
@@ -26,6 +29,8 @@ const categoryCompletion = [
   { label: "National service contributions", value: 92 },
   { label: "Industry placements", value: 40 },
 ];
+
+const statIcons = [CheckCircle2, Clock, Calendar];
 
 export default async function MilestonesPage() {
   const supabase = await createSupabaseServerClient();
@@ -74,101 +79,99 @@ export default async function MilestonesPage() {
       section="Scholar Portal"
       description="Track course completion, internships, research, national service contributions, and industry placements."
     >
-      <div className="space-y-5">
-        {/* Summary row */}
-        <div className="grid md:grid-cols-3 border border-border/50 rounded-xl overflow-hidden divide-x divide-border/50">
+      <div className="space-y-6">
+        <div className="grid gap-4 sm:grid-cols-3">
           {stats.map((s, i) => (
-            <div key={i} className="border-t-2 border-foreground px-5 py-5">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
-                {s.label}
-              </p>
-              <p className="text-3xl font-semibold tracking-tight leading-none mb-1">
-                {s.value}
-              </p>
-              <p className="text-[11px] text-muted-foreground">{s.detail}</p>
-            </div>
+            <MetricCard
+              key={s.label}
+              title={s.label}
+              value={s.value}
+              description={s.detail}
+              icon={statIcons[i]}
+              className="border-border/60"
+            />
           ))}
         </div>
 
-        <div className="grid gap-5 xl:grid-cols-[0.85fr_1.15fr]">
-          {/* Category Completion */}
-          <div className="border border-border/50 rounded-xl overflow-hidden">
-            <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border/50 bg-muted/20">
-              <Target className="h-3.5 w-3.5 text-primary" />
-              <div>
-                <p className="text-xs font-semibold">Category Completion</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
-                  Required milestone areas across the scholar journey.
-                </p>
-              </div>
-            </div>
-            <div className="p-5 space-y-4">
+        <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-4 w-4 text-primary" />
+                Category Completion
+              </CardTitle>
+              <CardDescription>
+                Required milestone areas across the scholar journey.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
               {categoryCompletion.map((item) => (
                 <div key={item.label} className="space-y-1.5">
                   <div className="flex items-center justify-between gap-4">
-                    <p className="text-xs font-medium">{item.label}</p>
-                    <span className="text-xs font-semibold">{item.value}%</span>
+                    <p className="text-sm font-medium">{item.label}</p>
+                    <span className="text-sm font-semibold">{item.value}%</span>
                   </div>
                   <Progress value={item.value} className="h-1.5" />
                 </div>
               ))}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          {/* Milestone Board */}
-          <div className="border border-border/50 rounded-xl overflow-hidden">
-            <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border/50 bg-muted/20">
-              <Flag className="h-3.5 w-3.5 text-primary" />
-              <div>
-                <p className="text-xs font-semibold">Milestone Board</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
-                  Delivery detail, evidence, and impact for each core milestone.
-                </p>
-              </div>
-            </div>
-            <div className="divide-y divide-border/50">
-              {milestonesList.map((m: { id: string, title: string, category: string, status: BadgeStatus, dueDate: string, owner: string, impact: string, evidence: string }) => (
-                <div key={m.id} className="p-5">
-                  <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-xs font-semibold">{m.title}</p>
-                        <span className="text-[10px] font-bold uppercase tracking-widest border border-border/50 rounded px-1.5 py-px text-muted-foreground capitalize">
-                          {m.category}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-muted-foreground mt-0.5">
-                        {m.impact}
-                      </p>
-                    </div>
-                    <StatusBadge status={m.status} />
-                  </div>
-                  <div className="grid gap-2 sm:grid-cols-3">
-                    {[
-                      { label: "Due date", value: m.dueDate, icon: Calendar },
-                      { label: "Owner", value: m.owner },
-                      { label: "Evidence", value: m.evidence },
-                    ].map((cell) => (
-                      <div
-                        key={cell.label}
-                        className="border border-border/50 rounded-lg bg-muted/20 p-3"
-                      >
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
-                          {cell.label}
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Flag className="h-4 w-4 text-primary" />
+                Milestone Board
+              </CardTitle>
+              <CardDescription>
+                Delivery detail, evidence, and impact for each core milestone.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-border/50">
+                {milestonesList.map((m: { id: string, title: string, category: string, status: BadgeStatus, dueDate: string, owner: string, impact: string, evidence: string }) => (
+                  <div key={m.id} className="p-6">
+                    <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="text-sm font-semibold">{m.title}</p>
+                          <Badge variant="outline" className="capitalize">
+                            {m.category}
+                          </Badge>
+                        </div>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          {m.impact}
                         </p>
-                        <p className="text-[11px] font-medium">{cell.value}</p>
                       </div>
-                    ))}
+                      <StatusBadge status={m.status} />
+                    </div>
+                    <div className="grid gap-2 sm:grid-cols-3">
+                      {[
+                        { label: "Due date", value: m.dueDate },
+                        { label: "Owner", value: m.owner },
+                        { label: "Evidence", value: m.evidence },
+                      ].map((cell) => (
+                        <div
+                          key={cell.label}
+                          className="rounded-lg border bg-muted/20 p-3"
+                        >
+                          <p className="mb-1.5 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                            {cell.label}
+                          </p>
+                          <p className="text-xs font-medium">{cell.value}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-              {milestonesList.length === 0 && (
-                <p className="px-5 py-8 text-xs text-muted-foreground text-center border border-dashed border-border/50 m-4 rounded-xl">
-                  No milestones found.
-                </p>
-              )}
-            </div>
-          </div>
+                ))}
+                {milestonesList.length === 0 && (
+                  <p className="m-6 rounded-xl border border-dashed border-border/50 px-5 py-8 text-center text-sm text-muted-foreground">
+                    No milestones found.
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </PageContainer>

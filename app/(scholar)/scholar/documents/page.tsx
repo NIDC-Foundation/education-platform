@@ -1,5 +1,6 @@
 import { PageContainer } from "@/components/layout/page-container";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import type { BadgeStatus } from "@/components/ui/status-badge";
 import {
@@ -41,31 +42,33 @@ const DocCard = ({
       d.type === type || (type === "Identity" && d.type === "Compliance")
   );
   return (
-    <div className="border border-border/50 rounded-xl overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/50 bg-muted/20">
-        <p className="text-xs font-semibold">{title}</p>
-        <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-      </div>
-      <div className="p-4 space-y-2">
+    <Card className="border-border/60">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Icon className="h-4 w-4 text-primary" />
+          {title}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
         {docs.map((doc: ScholarDocument) => (
           <div
             key={doc.id}
-            className="flex items-center justify-between p-3 border border-border/50 rounded-lg bg-muted/20"
+            className="flex items-center justify-between rounded-lg border bg-muted/20 p-3"
           >
             <div className="flex items-center gap-2.5">
-              <FileText className="h-3.5 w-3.5 text-primary shrink-0" />
-              <span className="text-xs font-medium">{doc.name}</span>
+              <FileText className="h-4 w-4 shrink-0 text-primary" />
+              <span className="text-sm font-medium">{doc.name}</span>
             </div>
             <StatusBadge status={doc.status} />
           </div>
         ))}
         {docs.length === 0 && (
-          <p className="text-xs text-muted-foreground italic py-2">
+          <p className="py-2 text-sm italic text-muted-foreground">
             No {title.toLowerCase()} found.
           </p>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -89,21 +92,20 @@ export default async function DocumentsPage() {
         </Button>
       }
     >
-      <div className="space-y-5">
-        <div className="grid gap-5 md:grid-cols-2">
+      <div className="space-y-6">
+        <div className="grid gap-6 md:grid-cols-2">
           <DocCard title="Identity & Profile" icon={Shield} type="Identity" scholarDocuments={scholarDocuments} />
           <DocCard title="Academic Records" icon={FileText} type="Academic" scholarDocuments={scholarDocuments} />
         </div>
 
-        {/* Ledger */}
-        <div className="border border-border/50 rounded-xl overflow-hidden">
-          <div className="px-5 py-3.5 border-b border-border/50 bg-muted/20">
-            <p className="text-xs font-semibold">Document Ledger</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
+        <Card className="border-border/60">
+          <CardHeader>
+            <CardTitle>Document Ledger</CardTitle>
+            <CardDescription>
               Full register of all uploaded files and verification status.
-            </p>
-          </div>
-          <div className="p-0">
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -140,7 +142,7 @@ export default async function DocumentsPage() {
                   <TableRow>
                     <TableCell
                       colSpan={6}
-                      className="text-center py-8 text-xs text-muted-foreground"
+                      className="py-8 text-center text-sm text-muted-foreground"
                     >
                       No documents recorded in the ledger.
                     </TableCell>
@@ -148,8 +150,8 @@ export default async function DocumentsPage() {
                 )}
               </TableBody>
             </Table>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </PageContainer>
   );

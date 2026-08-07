@@ -71,7 +71,7 @@ export default async function ProgressReportsPage() {
       action={<Button>Create Draft Update</Button>}
     >
       <div className="space-y-6">
-        <Card className="border-border/60 bg-[linear-gradient(135deg,rgba(90,200,120,0.10),rgba(255,255,255,0.96)_55%,rgba(238,250,242,0.9))]">
+        <Card className="border-border/60 bg-gradient-to-br from-primary/8 via-background to-secondary/40">
           <CardContent className="p-6">
             <div className="grid gap-4 lg:grid-cols-3">
               <div className="rounded-xl border bg-background/80 p-4">

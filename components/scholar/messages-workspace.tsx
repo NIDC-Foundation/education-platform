@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageContainer } from "@/components/layout/page-container";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -203,21 +205,18 @@ export function ScholarMessagesWorkspace({ threads, currentUserId }: ScholarMess
                 </Dialog>
             }
         >
-            <div className="grid gap-5 xl:grid-cols-[0.8fr_1.2fr]">
-                {/* Thread list */}
-                <div className="border border-border/50 rounded-xl overflow-hidden">
-                    <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border/50 bg-muted/20">
-                        <Mail className="h-3.5 w-3.5 text-primary" />
-                        <div>
-                            <p className="text-xs font-semibold">Threads</p>
-                            <p className="text-[11px] text-muted-foreground mt-0.5">
-                                Recent conversations and requests.
-                            </p>
-                        </div>
-                    </div>
-                    <div className="divide-y divide-border/50">
+            <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
+                <Card className="border-border/60">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Mail className="h-4 w-4 text-primary" />
+                            Threads
+                        </CardTitle>
+                        <CardDescription>Recent conversations and requests.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
                         {threads.length === 0 && (
-                            <div className="p-6 text-center text-[11px] text-muted-foreground">
+                            <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
                                 No conversations yet. Start one with &ldquo;New Message&rdquo;.
                             </div>
                         )}
@@ -228,89 +227,52 @@ export function ScholarMessagesWorkspace({ threads, currentUserId }: ScholarMess
                                     key={thread.id}
                                     type="button"
                                     onClick={() => setSelectedThreadId(thread.id)}
+                                    aria-pressed={isActive}
                                     className={cn(
-                                        "w-full p-4 text-left transition-colors",
-                                        isActive
-                                            ? "bg-foreground text-background"
-                                            : "hover:bg-muted/30"
+                                        "w-full rounded-xl border bg-background p-4 text-left transition-colors",
+                                        isActive ? "border-primary/40 bg-primary/5" : "hover:bg-muted/30"
                                     )}
                                 >
                                     <div className="flex items-start justify-between gap-3">
                                         <div>
-                                            <p
-                                                className={cn(
-                                                    "text-xs font-semibold",
-                                                    isActive ? "text-background" : "text-foreground"
-                                                )}
-                                            >
+                                            <p className="font-medium">
                                                 {thread.subject || getCategoryLabel(thread.category)}
                                             </p>
-                                            <p
-                                                className={cn(
-                                                    "text-[11px]",
-                                                    isActive
-                                                        ? "text-background/60"
-                                                        : "text-muted-foreground"
-                                                )}
-                                            >
+                                            <p className="text-xs text-muted-foreground">
                                                 {getCategoryLabel(thread.category)}
                                             </p>
                                         </div>
-                                        {thread.unreadCount > 0 && (
-                                            <span
-                                                className={cn(
-                                                    "text-[9px] font-bold rounded-full px-2 py-px",
-                                                    isActive
-                                                        ? "bg-primary text-primary-foreground"
-                                                        : "bg-foreground text-background"
-                                                )}
-                                            >
-                                                {thread.unreadCount}
-                                            </span>
-                                        )}
+                                        {thread.unreadCount > 0 && <Badge>{thread.unreadCount}</Badge>}
                                     </div>
-                                    <p
-                                        className={cn(
-                                            "mt-2 text-[11px] line-clamp-1",
-                                            isActive ? "text-background/60" : "text-muted-foreground"
-                                        )}
-                                    >
+                                    <p className="mt-3 text-sm text-muted-foreground line-clamp-1">
                                         {thread.lastMessage || "No messages yet."}
                                     </p>
-                                    <p
-                                        className={cn(
-                                            "mt-1 text-[10px]",
-                                            isActive
-                                                ? "text-background/40"
-                                                : "text-muted-foreground/50"
-                                        )}
-                                    >
+                                    <p className="mt-2 text-xs text-muted-foreground">
                                         {formatRelativeTime(thread.lastMessageAt)}
                                     </p>
                                 </button>
                             );
                         })}
-                    </div>
-                </div>
+                    </CardContent>
+                </Card>
 
-                {/* Thread view */}
-                <div className="border border-border/50 rounded-xl overflow-hidden flex flex-col min-h-[500px]">
-                    <div className="px-5 py-3.5 border-b border-border/50 bg-muted/20">
-                        <p className="text-xs font-semibold">
+                <Card className="border-border/60">
+                    <CardHeader>
+                        <CardTitle>
                             {activeThread ? activeThread.subject || getCategoryLabel(activeThread.category) : "No thread selected"}
-                        </p>
-                        <p className="text-[11px] text-muted-foreground mt-0.5">
+                        </CardTitle>
+                        <CardDescription>
                             {activeThread
                                 ? getCategoryLabel(activeThread.category)
                                 : "Select a thread to view messages."}
-                        </p>
-                    </div>
-                    <div className="flex-1 flex flex-col p-4">
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
                         {activeThread ? (
                             <>
-                                <div className="flex-1 space-y-3 overflow-y-auto pr-1 pb-3">
+                                <div className="space-y-3">
                                     {isLoadingMessages ? (
-                                        <div className="flex items-center justify-center h-full text-muted-foreground">
+                                        <div className="flex items-center justify-center py-10 text-muted-foreground">
                                             <Loader2 className="h-4 w-4 animate-spin" />
                                         </div>
                                     ) : (
@@ -319,27 +281,27 @@ export function ScholarMessagesWorkspace({ threads, currentUserId }: ScholarMess
                                             return (
                                                 <div
                                                     key={message.id}
-                                                    className={`rounded-xl p-4 text-xs max-w-[85%] ${
+                                                    className={`rounded-xl p-4 text-sm ${
                                                         isMine
-                                                            ? "bg-foreground text-background ml-auto"
-                                                            : "bg-muted/30 mr-auto"
+                                                            ? "bg-primary text-primary-foreground ml-8"
+                                                            : "bg-muted/30 mr-8"
                                                     }`}
                                                 >
-                                                    <p className="font-semibold mb-1">{getSenderLabel(message, currentUserId)}</p>
+                                                    <p className="font-medium">{getSenderLabel(message, currentUserId)}</p>
                                                     <p
-                                                        className={
+                                                        className={`mt-2 ${
                                                             isMine
-                                                                ? "text-background/80"
+                                                                ? "text-primary-foreground/90"
                                                                 : "text-muted-foreground"
-                                                        }
+                                                        }`}
                                                     >
                                                         {message.body}
                                                     </p>
                                                     <p
-                                                        className={`mt-1.5 text-[10px] ${
+                                                        className={`mt-2 text-xs ${
                                                             isMine
-                                                                ? "text-background/40"
-                                                                : "text-muted-foreground/50"
+                                                                ? "text-primary-foreground/70"
+                                                                : "text-muted-foreground/70"
                                                         }`}
                                                     >
                                                         {formatRelativeTime(message.createdAt)}
@@ -349,26 +311,23 @@ export function ScholarMessagesWorkspace({ threads, currentUserId }: ScholarMess
                                         })
                                     )}
                                 </div>
-                                <div className="border border-border/50 rounded-xl p-4 mt-auto bg-muted/10">
-                                    {error && <p className="text-xs text-destructive mb-2">{error}</p>}
+                                <div className="rounded-xl border bg-background p-4">
+                                    {error && <p className="mb-2 text-xs text-destructive">{error}</p>}
                                     <Textarea
-                                        rows={3}
+                                        rows={4}
                                         placeholder="Write a reply..."
-                                        className="resize-none text-xs"
                                         value={draft}
                                         onChange={(event) => setDraft(event.target.value)}
                                     />
                                     <div className="mt-3 flex justify-end">
                                         <Button
-                                            size="sm"
-                                            className="gap-2 rounded-md"
                                             disabled={isSending || !draft.trim()}
                                             onClick={handleSend}
                                         >
                                             {isSending ? (
-                                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
                                             ) : (
-                                                <Send className="h-3.5 w-3.5" />
+                                                <Send className="mr-1" />
                                             )}
                                             Send Message
                                         </Button>
@@ -376,13 +335,12 @@ export function ScholarMessagesWorkspace({ threads, currentUserId }: ScholarMess
                                 </div>
                             </>
                         ) : (
-                            <div className="flex-1 flex items-center justify-center border border-dashed border-border/50 rounded-xl text-xs text-muted-foreground text-center p-6">
-                                Your inbox is empty. Once you receive a message, it will appear
-                                here.
+                            <div className="rounded-xl border border-dashed bg-muted/20 p-6 text-center text-sm text-muted-foreground">
+                                Your inbox is empty. Once you receive a message, it will appear here.
                             </div>
                         )}
-                    </div>
-                </div>
+                    </CardContent>
+                </Card>
             </div>
         </PageContainer>
     );

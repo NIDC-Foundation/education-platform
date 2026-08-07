@@ -1,7 +1,13 @@
+import { MetricCard } from "@/components/cards/metric-card";
 import { PageContainer } from "@/components/layout/page-container";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
+  Award,
+  BookOpen,
   Briefcase,
+  GraduationCap,
 } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getScholarAcademicJourney } from "@/lib/supabase/actions";
@@ -42,6 +48,8 @@ const capabilityGrowth = [
     detail: "Portfolio is strong; interview storytelling is next.",
   },
 ];
+
+const metricIcons = [GraduationCap, Award, BookOpen, Briefcase];
 
 export default async function AcademicJourneyPage() {
   const supabase = await createSupabaseServerClient();
@@ -84,144 +92,138 @@ export default async function AcademicJourneyPage() {
       section="Scholar Portal"
       description="A live view of academic growth, coursework, and readiness for deployment."
     >
-      <div className="space-y-5">
-        {/* Metric row */}
-        <div className="grid md:grid-cols-2 xl:grid-cols-4 border border-border/50 rounded-xl overflow-hidden divide-x divide-border/50">
+      <div className="space-y-6">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {metrics.map((m, i) => (
-            <div key={i} className="border-t-2 border-foreground px-5 py-5">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
-                {m.label}
-              </p>
-              <p className="text-3xl font-semibold tracking-tight leading-none mb-1">
-                {m.value}
-              </p>
-              <p className="text-[11px] text-muted-foreground">{m.sub}</p>
-            </div>
+            <MetricCard
+              key={m.label}
+              title={m.label}
+              value={m.value}
+              description={m.sub}
+              icon={metricIcons[i]}
+              className="border-border/60"
+            />
           ))}
         </div>
 
-        <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
-          {/* Term Timeline */}
-          <div className="border border-border/50 rounded-xl overflow-hidden">
-            <div className="px-5 py-3.5 border-b border-border/50 bg-muted/20">
-              <p className="text-xs font-semibold">Term Timeline</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Performance and learning focus across the active academic
-                cycles.
-              </p>
-            </div>
-            <div className="p-5 space-y-5">
-              {terms.map((term: TermEntry, index: number) => (
-                <div key={term.id} className="flex gap-4">
-                  <div className="mt-1 flex flex-col items-center">
-                    <div className="h-3 w-3 rounded-full bg-foreground" />
-                    {index < terms.length - 1 && (
-                      <div className="mt-2 h-16 w-px bg-border/50" />
-                    )}
+        <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle>Term Timeline</CardTitle>
+              <CardDescription>
+                Performance and learning focus across the active academic cycles.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-5">
+                {terms.map((term: TermEntry, index: number) => (
+                  <div key={term.id} className="flex gap-4">
+                    <div className="mt-1 flex flex-col items-center">
+                      <div className="h-3 w-3 rounded-full bg-primary" />
+                      {index < terms.length - 1 && (
+                        <div className="mt-2 h-16 w-px bg-border" />
+                      )}
+                    </div>
+                    <div className="pb-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-sm font-semibold">{term.term}</p>
+                        <Badge variant="outline">GPA {term.gpa}</Badge>
+                      </div>
+                      <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
+                        {term.highlight}
+                      </p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.2em] text-muted-foreground/60">
+                        {term.focus}
+                      </p>
+                    </div>
                   </div>
-                  <div className="pb-5">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="text-sm font-semibold">{term.term}</p>
-                      <span className="text-[10px] font-bold uppercase tracking-widest border border-border/50 rounded px-1.5 py-px text-muted-foreground">
-                        GPA {term.gpa}
+                ))}
+                {terms.length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    No academic terms recorded yet.
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle>Current Coursework</CardTitle>
+              <CardDescription>
+                Modules shaping current academic growth and research readiness.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-border/50">
+                {courses.map((course: CourseEntry) => (
+                  <div
+                    key={course.id}
+                    className="flex items-center justify-between gap-3 px-6 py-4"
+                  >
+                    <div>
+                      <p className="text-sm font-medium">{course.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {course.credits} credits · {course.note}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Badge variant="outline" className="capitalize">
+                        {course.status}
+                      </Badge>
+                      <span className="text-sm font-semibold">
+                        {course.score || "N/A"}
                       </span>
                     </div>
-                    <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
-                      {term.highlight}
-                    </p>
-                    <p className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground/60">
-                      {term.focus}
-                    </p>
                   </div>
-                </div>
-              ))}
-              {terms.length === 0 && (
-                <p className="text-xs text-muted-foreground">
-                  No academic terms recorded yet.
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Current Coursework */}
-          <div className="border border-border/50 rounded-xl overflow-hidden">
-            <div className="px-5 py-3.5 border-b border-border/50 bg-muted/20">
-              <p className="text-xs font-semibold">Current Coursework</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Modules shaping current academic growth and research readiness.
-              </p>
-            </div>
-            <div className="divide-y divide-border/50">
-              {courses.map((course: CourseEntry) => (
-                <div
-                  key={course.id}
-                  className="flex items-center justify-between gap-3 px-5 py-3.5"
-                >
-                  <div>
-                    <p className="text-xs font-medium">{course.title}</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {course.credits} credits · {course.note}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-[10px] font-bold uppercase tracking-widest border border-border/50 rounded px-1.5 py-px text-muted-foreground capitalize">
-                      {course.status}
-                    </span>
-                    <span className="text-xs font-semibold">
-                      {course.score || "N/A"}
-                    </span>
-                  </div>
-                </div>
-              ))}
-              {courses.length === 0 && (
-                <p className="px-5 py-4 text-xs text-muted-foreground">
-                  No courses logged yet.
-                </p>
-              )}
-            </div>
-          </div>
+                ))}
+                {courses.length === 0 && (
+                  <p className="px-6 py-4 text-sm text-muted-foreground">
+                    No courses logged yet.
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-2">
-          {/* Capability Growth */}
-          <div className="border border-border/50 rounded-xl overflow-hidden">
-            <div className="px-5 py-3.5 border-b border-border/50 bg-muted/20">
-              <p className="text-xs font-semibold">Capability Growth</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                How academic development is translating into real deployment
-                readiness.
-              </p>
-            </div>
-            <div className="p-5 space-y-5">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle>Capability Growth</CardTitle>
+              <CardDescription>
+                How academic development is translating into real deployment readiness.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
               {capabilityGrowth.map((item) => (
                 <div key={item.label} className="space-y-2">
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-xs font-medium">{item.label}</p>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-sm font-medium">{item.label}</p>
+                      <p className="text-xs text-muted-foreground">
                         {item.detail}
                       </p>
                     </div>
-                    <span className="text-xs font-semibold">{item.value}%</span>
+                    <span className="text-sm font-semibold">{item.value}%</span>
                   </div>
                   <Progress value={item.value} className="h-1.5" />
                 </div>
               ))}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          {/* Applied Learning Focus */}
-          <div className="border border-border/50 rounded-xl overflow-hidden">
-            <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border/50 bg-muted/20">
-              <Briefcase className="h-3.5 w-3.5 text-primary" />
-              <div>
-                <p className="text-xs font-semibold">Applied Learning Focus</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
-                  What the current academic year is preparing you to do next.
-                </p>
-              </div>
-            </div>
-            <div className="p-5 space-y-3">
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Briefcase className="h-4 w-4 text-primary" />
+                Applied Learning Focus
+              </CardTitle>
+              <CardDescription>
+                What the current academic year is preparing you to do next.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
               {[
                 {
                   label: "Research direction",
@@ -244,21 +246,21 @@ export default async function AcademicJourneyPage() {
               ].map((item) => (
                 <div
                   key={item.label}
-                  className="border border-border/50 rounded-lg p-4 bg-muted/20"
+                  className="rounded-xl border bg-muted/20 p-4"
                 >
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
+                  <p className="mb-1.5 text-xs uppercase tracking-[0.24em] text-muted-foreground">
                     {item.label}
                   </p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="text-sm leading-relaxed text-muted-foreground">
                     {item.value}
                   </p>
                 </div>
               ))}
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 Current scholar: {fullName} · {profile?.level || "Scholar"}
               </p>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </PageContainer>

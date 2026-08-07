@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MetricCard } from "@/components/cards/metric-card";
 import { PageContainer } from "@/components/layout/page-container";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -115,7 +116,7 @@ export default async function ScholarDashboardPage() {
             }
         >
             <div className="space-y-6">
-                <Card className="border-border/60 bg-[linear-gradient(135deg,rgba(90,200,120,0.12),rgba(255,255,255,0.96)_48%,rgba(211,240,224,0.75))]">
+                <Card className="border-border/60 bg-gradient-to-br from-primary/8 via-background to-secondary/40">
                     <CardContent className="p-6 md:p-8">
                         <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
                             <div className="space-y-5">
@@ -193,28 +194,17 @@ export default async function ScholarDashboardPage() {
                     </CardContent>
                 </Card>
 
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-                    {scholarDashboardStats.map((stat, index) => {
-                        const Icon = widgetIcons[index];
-                        const isLongValue = stat.title === "Program Enrolled";
-
-                        return (
-                            <Card key={stat.title} className="border-border/60">
-                                <CardHeader className="pb-3">
-                                    <div className="flex items-center justify-between gap-3">
-                                        <CardTitle className="text-sm text-muted-foreground">{stat.title}</CardTitle>
-                                        <Icon className="h-4 w-4 text-muted-foreground" />
-                                    </div>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className={isLongValue ? "text-lg font-semibold leading-snug" : "text-3xl font-bold tracking-tight"}>
-                                        {stat.value}
-                                    </div>
-                                    <p className="mt-2 text-xs text-muted-foreground">{stat.description}</p>
-                                </CardContent>
-                            </Card>
-                        );
-                    })}
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                    {scholarDashboardStats.map((stat, index) => (
+                        <MetricCard
+                            key={stat.title}
+                            title={stat.title}
+                            value={stat.value}
+                            description={stat.description}
+                            icon={widgetIcons[index]}
+                            className="border-border/60"
+                        />
+                    ))}
                 </div>
 
                 <div className="grid gap-6 xl:grid-cols-3">
@@ -258,7 +248,7 @@ export default async function ScholarDashboardPage() {
                             {milestones.filter((m: MilestoneEntry) => m.category === 'internships' || m.category === 'industry placements').map((stage: MilestoneEntry, index: number, arr: MilestoneEntry[]) => (
                                 <div key={stage.id} className="flex gap-3">
                                     <div className="mt-1 flex flex-col items-center">
-                                        <div className={`h-3 w-3 rounded-full ${stage.status === "completed" ? "bg-primary" : stage.status === "active" ? "bg-amber-500" : "bg-muted-foreground/30"}`} />
+                                        <div className={`h-3 w-3 rounded-full ${stage.status === "completed" ? "bg-primary" : stage.status === "active" ? "bg-chart-5" : "bg-muted-foreground/30"}`} />
                                         {index < arr.length - 1 && <div className="mt-2 h-10 w-px bg-border" />}
                                     </div>
                                     <div className="pb-4">
@@ -324,7 +314,7 @@ export default async function ScholarDashboardPage() {
                             {activeAnnouncements.map((announcement: AnnouncementEntry, indexVal: number) => (
                                 <div key={announcement.id}>
                                     <div className="flex flex-wrap items-center gap-2">
-                                        <Badge className={announcement.priority === "High" ? "bg-amber-100 text-amber-800 hover:bg-amber-100" : "bg-slate-100 text-slate-700 hover:bg-slate-100"}>
+                                        <Badge variant={announcement.priority === "High" ? "destructive" : "secondary"}>
                                             {announcement.priority} priority
                                         </Badge>
                                         <span className="text-xs text-muted-foreground">{new Date(announcement.created_at).toLocaleDateString()}</span>
@@ -357,7 +347,7 @@ export default async function ScholarDashboardPage() {
                                                 <p className="font-semibold">{latestMentorNote.theme}</p>
                                                 <p className="text-xs text-muted-foreground">{new Date(latestMentorNote.date).toLocaleDateString()} · {mentorName}</p>
                                             </div>
-                                            <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">
+                                            <Badge className="bg-primary/10 text-primary hover:bg-primary/10">
                                                 {latestMentorNote.sentiment}
                                             </Badge>
                                         </div>

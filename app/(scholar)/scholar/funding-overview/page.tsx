@@ -1,5 +1,7 @@
+import { MetricCard } from "@/components/cards/metric-card";
 import { PageContainer } from "@/components/layout/page-container";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/ui/status-badge";
 import type { BadgeStatus } from "@/components/ui/status-badge";
@@ -11,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Banknote, CheckCircle2, Clock3 } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getScholarDashboardData } from "@/lib/supabase/actions";
 import { redirect } from "next/navigation";
@@ -95,12 +98,19 @@ export default async function FundingOverviewPage() {
       label: "Approved Support",
       value: fmt(totalApproved),
       sub: "Full scholarship commitment",
+      icon: Banknote,
     },
-    { label: "Disbursed", value: fmt(totalDisbursed), sub: "Released to date" },
+    {
+      label: "Disbursed",
+      value: fmt(totalDisbursed),
+      sub: "Released to date",
+      icon: CheckCircle2,
+    },
     {
       label: "Next Stipend",
       value: fmt(nextStipend),
       sub: nextStipend > 0 ? "Upcoming release" : "No pending stipends",
+      icon: Clock3,
     },
   ];
 
@@ -115,44 +125,41 @@ export default async function FundingOverviewPage() {
         </Button>
       }
     >
-      <div className="space-y-5">
-        {/* Metric row */}
-        <div className="grid md:grid-cols-3 border border-border/50 rounded-xl overflow-hidden divide-x divide-border/50">
-          {metrics.map((m, i) => (
-            <div key={i} className="border-t-2 border-foreground px-5 py-5">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
-                {m.label}
-              </p>
-              <p className="text-2xl font-semibold tracking-tight leading-none mb-1">
-                {m.value}
-              </p>
-              <p className="text-[11px] text-muted-foreground">{m.sub}</p>
-            </div>
+      <div className="space-y-6">
+        <div className="grid gap-4 sm:grid-cols-3">
+          {metrics.map((m) => (
+            <MetricCard
+              key={m.label}
+              title={m.label}
+              value={m.value}
+              description={m.sub}
+              icon={m.icon}
+              className="border-border/60"
+            />
           ))}
         </div>
 
-        <div className="grid gap-5 xl:grid-cols-2">
-          {/* Funding Breakdown */}
-          <div className="border border-border/50 rounded-xl overflow-hidden">
-            <div className="px-5 py-3.5 border-b border-border/50 bg-muted/20">
-              <p className="text-xs font-semibold">Funding Breakdown</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
+        <div className="grid gap-6 xl:grid-cols-2">
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle>Funding Breakdown</CardTitle>
+              <CardDescription>
                 How approved support is allocated across the scholar experience.
-              </p>
-            </div>
-            <div className="p-5 space-y-5">
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
               {fundingBreakdownArr.map((line) => (
                 <div key={line.label} className="space-y-2">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-xs font-medium">{line.label}</p>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-sm font-medium">{line.label}</p>
+                      <p className="text-xs text-muted-foreground">
                         {line.note}
                       </p>
                     </div>
-                    <div className="text-right shrink-0">
-                      <p className="text-xs font-semibold">{line.used}</p>
-                      <p className="text-[11px] text-muted-foreground">
+                    <div className="shrink-0 text-right">
+                      <p className="text-sm font-semibold">{line.used}</p>
+                      <p className="text-xs text-muted-foreground">
                         of {line.allocated}
                       </p>
                     </div>
@@ -160,18 +167,17 @@ export default async function FundingOverviewPage() {
                   <Progress value={line.utilisation} className="h-1.5" />
                 </div>
               ))}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          {/* Funding Health */}
-          <div className="border border-border/50 rounded-xl overflow-hidden">
-            <div className="px-5 py-3.5 border-b border-border/50 bg-muted/20">
-              <p className="text-xs font-semibold">Funding Health</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle>Funding Health</CardTitle>
+              <CardDescription>
                 Compliance and release signals for the current cycle.
-              </p>
-            </div>
-            <div className="p-5 space-y-3">
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
               {[
                 "Tuition obligations are current and institution invoices are reconciled.",
                 "Living stipend releases are on schedule with one pending payout cycle.",
@@ -180,55 +186,56 @@ export default async function FundingOverviewPage() {
               ].map((item) => (
                 <div
                   key={item}
-                  className="border border-border/50 rounded-lg p-3.5 bg-muted/20 text-xs text-muted-foreground leading-relaxed"
+                  className="rounded-lg border bg-muted/20 p-3.5 text-sm leading-relaxed text-muted-foreground"
                 >
                   {item}
                 </div>
               ))}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Ledger */}
-        <div className="border border-border/50 rounded-xl overflow-hidden">
-          <div className="px-5 py-3.5 border-b border-border/50 bg-muted/20">
-            <p className="text-xs font-semibold">Disbursement Ledger</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
+        <Card className="border-border/60">
+          <CardHeader>
+            <CardTitle>Disbursement Ledger</CardTitle>
+            <CardDescription>
               Chronological record of approved funding support.
-            </p>
-          </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Reference</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {ledger.map((d: { id: string, date: string, category: string, amount: string, reference: string, status: BadgeStatus }) => (
-                <TableRow key={d.id}>
-                  <TableCell className="font-medium text-sm">
-                    {d.date}
-                  </TableCell>
-                  <TableCell className="text-sm">{d.category}</TableCell>
-                  <TableCell className="text-sm">{d.amount}</TableCell>
-                  <TableCell className="text-sm">{d.reference}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={d.status} />
-                  </TableCell>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Reference</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          {ledger.length === 0 && (
-            <div className="text-xs text-muted-foreground text-center py-10 border-t border-dashed border-border/50">
-              No disbursement records found.
-            </div>
-          )}
-        </div>
+              </TableHeader>
+              <TableBody>
+                {ledger.map((d: { id: string, date: string, category: string, amount: string, reference: string, status: BadgeStatus }) => (
+                  <TableRow key={d.id}>
+                    <TableCell className="font-medium text-sm">
+                      {d.date}
+                    </TableCell>
+                    <TableCell className="text-sm">{d.category}</TableCell>
+                    <TableCell className="text-sm">{d.amount}</TableCell>
+                    <TableCell className="text-sm">{d.reference}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={d.status} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            {ledger.length === 0 && (
+              <div className="border-t border-dashed border-border/50 py-10 text-center text-sm text-muted-foreground">
+                No disbursement records found.
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </PageContainer>
   );

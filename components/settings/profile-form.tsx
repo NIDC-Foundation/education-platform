@@ -444,10 +444,10 @@ export function ProfileForm({ profile }: ProfileFormProps) {
       </Card>
 
       {/* ── Danger Zone ── */}
-      <Card className="border-red-200 bg-red-50/30 dark:bg-red-900/10">
+      <Card className="border-destructive/30 bg-destructive/5">
         <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <p className="font-semibold text-sm text-red-700">
+            <p className="font-semibold text-sm text-destructive">
               Withdraw Application
             </p>
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -467,15 +467,15 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         </CardContent>
 
         {showWithdrawConfirm && (
-          <CardContent className="px-5 pb-5 pt-0 border-t border-red-200">
-            <div className="rounded-md bg-red-100/70 dark:bg-red-900/20 border border-red-300 dark:border-red-700 p-4 space-y-3">
+          <CardContent className="px-5 pb-5 pt-0 border-t border-destructive/30">
+            <div className="rounded-md bg-destructive/10 border border-destructive/30 p-4 space-y-3">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+                <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-semibold text-red-700">
+                  <p className="text-sm font-semibold text-destructive">
                     Are you sure?
                   </p>
-                  <p className="text-xs text-red-600 mt-0.5">
+                  <p className="text-xs text-destructive/80 mt-0.5">
                     This will immediately withdraw your application. You will
                     not be able to reverse this.
                   </p>

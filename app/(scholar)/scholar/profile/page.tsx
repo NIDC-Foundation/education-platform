@@ -39,9 +39,9 @@ export default async function ScholarProfilePage() {
             description="Your scholar identity, support network, and long-range development goals."
             action={<Button>Update Profile</Button>}
         >
-            <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-                <Card className="border-border/60">
-                    <CardContent className="p-6">
+            <div className="space-y-6">
+                <Card className="border-border/60 bg-gradient-to-br from-primary/8 via-background to-secondary/40">
+                    <CardContent className="p-6 md:p-8">
                         <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
                             <Avatar className="h-20 w-20 ring-4 ring-background shadow-sm" size="lg">
                                 <AvatarFallback className="bg-primary/12 text-primary text-2xl font-semibold">
@@ -62,12 +62,12 @@ export default async function ScholarProfilePage() {
                                 </div>
 
                                 <div className="grid gap-3 sm:grid-cols-2">
-                                    <div className="rounded-xl border bg-muted/20 p-4">
+                                    <div className="rounded-xl border bg-background/80 p-4">
                                         <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Programme</p>
                                         <p className="mt-2 font-semibold">{profile?.program || "Program Pending"}</p>
                                         <p className="mt-1 text-sm text-muted-foreground">{profile?.institution || "Institution Pending"}</p>
                                     </div>
-                                    <div className="rounded-xl border bg-muted/20 p-4">
+                                    <div className="rounded-xl border bg-background/80 p-4">
                                         <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Placement Track</p>
                                         <p className="mt-2 font-semibold">Public-sector analytics track</p>
                                         <p className="mt-1 text-sm text-muted-foreground">Career deployment goal</p>
@@ -78,7 +78,7 @@ export default async function ScholarProfilePage() {
                                     <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Focus Areas</p>
                                     <div className="mt-3 flex flex-wrap gap-2">
                                         {(profile?.focus_areas || ["General Analytics"]).map((area: string) => (
-                                            <Badge key={area} variant="outline">
+                                            <Badge key={area} variant="outline" className="bg-background/70">
                                                 {area}
                                             </Badge>
                                         ))}
@@ -89,51 +89,53 @@ export default async function ScholarProfilePage() {
                     </CardContent>
                 </Card>
 
-                <Card className="border-border/60">
-                    <CardHeader>
-                        <CardTitle>Profile Details</CardTitle>
-                        <CardDescription>Identity and programme details shared across scholar services.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {[
-                            { label: "Email address", value: profile?.email || user.email, icon: Mail },
-                            { label: "Phone number", value: profile?.phone || "Not provided", icon: Phone },
-                            { label: "Location", value: "Nigeria", icon: MapPin },
-                            { label: "State of origin", value: profile?.state_of_origin || "Not provided", icon: User },
-                        ].map((item, index) => (
-                            <div key={item.label}>
-                                <div className="flex items-start gap-3">
-                                    <item.icon className="mt-0.5 h-4 w-4 text-primary" />
-                                    <div>
-                                        <p className="text-sm font-medium">{item.label}</p>
-                                        <p className="text-sm text-muted-foreground">{item.value}</p>
+                <div className="grid gap-6 xl:grid-cols-2">
+                    <Card className="border-border/60">
+                        <CardHeader>
+                            <CardTitle>Profile Details</CardTitle>
+                            <CardDescription>Identity and programme details shared across scholar services.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {[
+                                { label: "Email address", value: profile?.email || user.email, icon: Mail },
+                                { label: "Phone number", value: profile?.phone || "Not provided", icon: Phone },
+                                { label: "Location", value: "Nigeria", icon: MapPin },
+                                { label: "State of origin", value: profile?.state_of_origin || "Not provided", icon: User },
+                            ].map((item, index) => (
+                                <div key={item.label}>
+                                    <div className="flex items-start gap-3">
+                                        <item.icon className="mt-0.5 h-4 w-4 text-primary" />
+                                        <div>
+                                            <p className="text-sm font-medium">{item.label}</p>
+                                            <p className="text-sm text-muted-foreground">{item.value}</p>
+                                        </div>
                                     </div>
+                                    {index < 3 && <Separator className="mt-4" />}
                                 </div>
-                                {index < 3 && <Separator className="mt-4" />}
-                            </div>
-                        ))}
-                    </CardContent>
-                </Card>
+                            ))}
+                        </CardContent>
+                    </Card>
 
-                <Card className="border-border/60">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Target className="h-4 w-4 text-primary" />
-                            Development Goals
-                        </CardTitle>
-                        <CardDescription>What success should look like over the next year.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {(profile?.goals || ["Graduate with honors", "Secure industry placement"]).map((goal: string, index: number) => (
-                            <div key={goal} className="rounded-xl border bg-background p-4">
-                                <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Goal {index + 1}</p>
-                                <p className="mt-2 font-medium">{goal}</p>
-                            </div>
-                        ))}
-                    </CardContent>
-                </Card>
+                    <Card className="border-border/60">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Target className="h-4 w-4 text-primary" />
+                                Development Goals
+                            </CardTitle>
+                            <CardDescription>What success should look like over the next year.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {(profile?.goals || ["Graduate with honors", "Secure industry placement"]).map((goal: string, index: number) => (
+                                <div key={goal} className="rounded-xl border bg-background p-4">
+                                    <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Goal {index + 1}</p>
+                                    <p className="mt-2 font-medium">{goal}</p>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                </div>
 
-                <div className="space-y-6">
+                <div className="grid gap-6 xl:grid-cols-2">
                     <Card className="border-border/60">
                         <CardHeader>
                             <CardTitle>Support Network</CardTitle>
