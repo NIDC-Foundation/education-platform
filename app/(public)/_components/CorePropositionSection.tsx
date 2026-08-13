@@ -44,7 +44,7 @@ export default function CorePropositionCards() {
   return (
     <section className="relative overflow-hidden bg-border px-4 py-20 text-foreground sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="relative grid min-h-[520px] gap-4 lg:grid-cols-12 lg:items-end">
+        <div className="relative grid min-h-130 gap-4 lg:grid-cols-12 lg:items-end">
           {/* Decorative marks */}
           <Sparkles className="absolute left-0 top-2 hidden size-8 text-foreground/80 lg:block" />
           <span className="absolute left-[24%] top-[28%] hidden text-3xl text-foreground/80 lg:block">

@@ -91,7 +91,7 @@ const SolutionSection = () => {
           {/* Box 5 (Real-world contribution) - Spans 2 cols */}
           <div className="group relative min-h-[250px] overflow-hidden rounded-[2rem] border border-border/50 bg-card p-0 shadow-sm transition-all duration-300 md:col-span-2">
              <Image
-              src="/focused.png"
+              src="/images/focused.png"
               alt="Talent actively applying capabilities"
               fill
               className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
