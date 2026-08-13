@@ -143,7 +143,7 @@ export default function HeroSection() {
 
           <div className="relative overflow-hidden rounded-2xl border border-border bg-muted shadow-2xl">
             <Image
-              src="/feature-03.png"
+              src="/images/feature-03.png"
               alt="Mentor guiding a young African learner in a modern innovation workspace"
               width={900}
               height={1100}

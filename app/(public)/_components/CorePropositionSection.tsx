@@ -23,7 +23,7 @@ type PropositionContent = {
 
 const propositionContent: PropositionContent = {
   mainImage: {
-    src: "/feature-01.png",
+    src: "/images/feature-01.png",
     alt: "Focused African learner in a modern education environment",
   },
   cohortImage: {
@@ -31,11 +31,11 @@ const propositionContent: PropositionContent = {
     alt: "Small selected cohort learning together",
   },
   mentorImage: {
-    src: "/feature-03.png",
+    src: "/images/feature-03.png",
     alt: "Mentor guiding a young learner",
   },
   continuityImage: {
-    src: "/feature-04.png",
+    src: "/images/feature-04.png",
     alt: "Students presenting measurable learning outcomes",
   },
 };
