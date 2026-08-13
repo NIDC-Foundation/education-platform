@@ -2,6 +2,7 @@ import Link from "next/link";
 import { MetricCard } from "@/components/cards/metric-card";
 import { HorizontalBarChart } from "@/components/donor/transparency-charts";
 import { PageContainer } from "@/components/layout/page-container";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -28,10 +29,10 @@ type UserEntry = {
 };
 
 
-function getUserStatusClass(status: string) {
-    if (status === "active") return "bg-emerald-100 text-emerald-800";
-    if (status === "pending") return "bg-amber-100 text-amber-800";
-    return "bg-red-100 text-red-800";
+function getUserStatusVariant(status: string) {
+    if (status === "active") return "default" as const;
+    if (status === "pending") return "secondary" as const;
+    return "destructive" as const;
 }
 
 export default async function UserManagementPage() {
@@ -51,10 +52,10 @@ export default async function UserManagementPage() {
     }, {});
 
     const userRoleBreakdown = [
-        { label: "Applicants", value: roleCounts.applicant || 0, color: "#0f766e" },
-        { label: "Scholars", value: roleCounts.scholar || 0, color: "#0284c7" },
-        { label: "Reviewers", value: roleCounts.reviewer || 0, color: "#d97706" },
-        { label: "Admins", value: roleCounts.admin || 0, color: "#dc2626" },
+        { label: "Applicants", value: roleCounts.applicant || 0, color: "var(--chart-1)" },
+        { label: "Scholars", value: roleCounts.scholar || 0, color: "var(--chart-2)" },
+        { label: "Reviewers", value: roleCounts.reviewer || 0, color: "var(--chart-3)" },
+        { label: "Admins", value: roleCounts.admin || 0, color: "var(--chart-5)" },
     ];
 
     const privilegedUsers = allUsers.filter((u: UserEntry) => ["admin", "reviewer", "partner"].includes(u.role));
@@ -117,9 +118,9 @@ export default async function UserManagementPage() {
                                             <p className="font-medium">{u.first_name} {u.last_name}</p>
                                             <p className="mt-1 text-sm text-muted-foreground">{u.role} · {u.email}</p>
                                         </div>
-                                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${getUserStatusClass(u.status)}`}>
+                                        <Badge variant={getUserStatusVariant(u.status)}>
                                             {u.status}
-                                        </span>
+                                        </Badge>
                                     </div>
                                     <p className="mt-3 text-xs uppercase tracking-[0.2em] text-muted-foreground">
                                         Joined {new Date(u.created_at).toLocaleDateString()}
@@ -154,9 +155,9 @@ export default async function UserManagementPage() {
                                         <TableCell>{u.email}</TableCell>
                                         <TableCell>{new Date(u.created_at).toLocaleDateString()}</TableCell>
                                         <TableCell>
-                                            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${getUserStatusClass(u.status)}`}>
+                                            <Badge variant={getUserStatusVariant(u.status)}>
                                                 {u.status}
-                                            </span>
+                                            </Badge>
                                         </TableCell>
                                     </TableRow>
                                 ))}

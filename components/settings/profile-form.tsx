@@ -34,6 +34,10 @@ import {
 } from "@/lib/supabase/actions";
 import { CldUploadWidget } from "next-cloudinary";
 
+const CLOUDINARY_CONFIGURED = Boolean(
+  process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+);
+
 interface ProfileFormProps {
   profile: {
     id: string;
@@ -194,42 +198,44 @@ export function ProfileForm({ profile }: ProfileFormProps) {
                   {profile.last_name?.[0] ?? ""}
                 </span>
               )}
-              <CldUploadWidget
-                signatureEndpoint="/api/cloudinary/sign"
-                onSuccess={(result) => {
-                  if (
-                    result.info &&
-                    typeof result.info !== "string" &&
-                    result.info.secure_url
-                  ) {
-                    setAvatarUrl(result.info.secure_url);
-                    updateProfile(profile.id, {
-                      avatar_url: result.info.secure_url,
-                    }).then(({ error }) => {
-                      if (error) {
-                        toast.error("Failed to save avatar. Please try again.");
-                      } else {
-                        toast.success("Avatar updated successfully!");
-                        window.dispatchEvent(new Event("profileUpdated"));
-                      }
-                    });
-                  }
-                }}
-              >
-                {(widgetState) => (
-                  <div
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (widgetState && typeof widgetState.open === 'function') {
-                        widgetState.open();
-                      }
-                    }}
-                    className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white text-xs font-medium"
-                  >
-                    Edit
-                  </div>
-                )}
-              </CldUploadWidget>
+              {CLOUDINARY_CONFIGURED && (
+                <CldUploadWidget
+                  signatureEndpoint="/api/cloudinary/sign"
+                  onSuccess={(result) => {
+                    if (
+                      result.info &&
+                      typeof result.info !== "string" &&
+                      result.info.secure_url
+                    ) {
+                      setAvatarUrl(result.info.secure_url);
+                      updateProfile(profile.id, {
+                        avatar_url: result.info.secure_url,
+                      }).then(({ error }) => {
+                        if (error) {
+                          toast.error("Failed to save avatar. Please try again.");
+                        } else {
+                          toast.success("Avatar updated successfully!");
+                          window.dispatchEvent(new Event("profileUpdated"));
+                        }
+                      });
+                    }
+                  }}
+                >
+                  {(widgetState) => (
+                    <div
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (widgetState && typeof widgetState.open === 'function') {
+                          widgetState.open();
+                        }
+                      }}
+                      className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white text-xs font-medium"
+                    >
+                      Edit
+                    </div>
+                  )}
+                </CldUploadWidget>
+              )}
             </div>
             <div>
               <h2 className="text-lg font-bold">

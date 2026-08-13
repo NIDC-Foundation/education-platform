@@ -25,7 +25,7 @@ export default function AnnualReportsPage() {
             <GrowthLineChart
               data={programGrowth}
               valueLabel="Donor-backed scholar coverage by year."
-              accent="#d97706"
+              accent="var(--chart-5)"
             />
           </CardContent>
         </Card>

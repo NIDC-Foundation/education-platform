@@ -2,6 +2,7 @@ import Link from "next/link";
 import { MetricCard } from "@/components/cards/metric-card";
 import { HorizontalBarChart } from "@/components/donor/transparency-charts";
 import { PageContainer } from "@/components/layout/page-container";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -55,7 +56,7 @@ export default async function ProgramsManagementPage() {
     const performanceItems = programs.map((p: ProgramEntry) => ({
         label: p.name,
         value: p.placement_rate || 0,
-        color: (p.placement_rate || 0) > 90 ? "#0f766e" : (p.placement_rate || 0) > 85 ? "#0284c7" : "#d97706",
+        color: (p.placement_rate || 0) > 90 ? "var(--chart-1)" : (p.placement_rate || 0) > 85 ? "var(--chart-2)" : "var(--chart-5)",
     }));
 
     return (
@@ -106,9 +107,9 @@ export default async function ProgramsManagementPage() {
                                             <p className="font-medium">{program.name}</p>
                                             <p className="mt-1 text-sm text-muted-foreground">{program.campuses?.join(", ") || "No campuses listed"}</p>
                                         </div>
-                                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${program.status === "active" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}>
+                                        <Badge variant={program.status === "active" ? "default" : "secondary"}>
                                             {program.status}
-                                        </span>
+                                        </Badge>
                                     </div>
                                     <div className="mt-4 grid gap-3 sm:grid-cols-2">
                                         <div className="rounded-lg bg-muted/20 p-3">

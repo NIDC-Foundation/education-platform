@@ -1,4 +1,5 @@
 import { PageContainer } from "@/components/layout/page-container";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -28,10 +29,10 @@ type SponsorEntry = {
 };
 
 
-function getSponsorStatusClass(status: string) {
-    if (status === "Active") return "bg-emerald-100 text-emerald-800";
-    if (status === "Renewal due") return "bg-amber-100 text-amber-800";
-    return "bg-red-100 text-red-800";
+function getSponsorStatusVariant(status: string) {
+    if (status === "Active") return "default" as const;
+    if (status === "Renewal due") return "secondary" as const;
+    return "destructive" as const;
 }
 
 export default async function SponsorsPage() {
@@ -100,9 +101,9 @@ export default async function SponsorsPage() {
                                         <TableCell>{sponsor.donor_details?.investment_focus || "—"}</TableCell>
                                         <TableCell>{sponsor.donor_details?.renewal_window || "—"}</TableCell>
                                         <TableCell>
-                                            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${getSponsorStatusClass(sponsor.donor_details?.status || "Active")}`}>
+                                            <Badge variant={getSponsorStatusVariant(sponsor.donor_details?.status || "Active")}>
                                                 {sponsor.donor_details?.status || "Active"}
-                                            </span>
+                                            </Badge>
                                         </TableCell>
                                     </TableRow>
                                 ))}

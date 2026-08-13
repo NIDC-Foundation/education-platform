@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { MetricCard } from "@/components/cards/metric-card";
 import { HorizontalBarChart } from "@/components/donor/transparency-charts";
 import { PageContainer } from "@/components/layout/page-container";
 import { ApplicationStatusBadge } from "@/components/ui/application-status-badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -11,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { CalendarClock, ClipboardCheck, ClipboardList, Users } from "lucide-react";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getAdminApplications } from "@/lib/supabase/actions";
@@ -40,6 +43,8 @@ function getCohortLabel(cohortYear: unknown) {
     ? `Cohort ${cohortYear}`
     : "Unassigned";
 }
+
+const metricIcons = [Users, ClipboardList, CalendarClock, ClipboardCheck];
 
 export default async function ApplicationsManagementPage() {
   const supabase = await createSupabaseServerClient();
@@ -91,7 +96,7 @@ export default async function ApplicationsManagementPage() {
   ];
 
   const pipelineData = [
-    { label: "Intake", value: totalApplicants > 0 ? 100 : 0, color: "#475569" },
+    { label: "Intake", value: totalApplicants > 0 ? 100 : 0, color: "var(--chart-1)" },
     {
       label: "Screening",
       value: Math.round(
@@ -100,7 +105,7 @@ export default async function ApplicationsManagementPage() {
           (totalApplicants || 1)) *
           100
       ),
-      color: "#0284c7",
+      color: "var(--chart-2)",
     },
     {
       label: "Interview",
@@ -111,7 +116,7 @@ export default async function ApplicationsManagementPage() {
           (totalApplicants || 1)) *
           100
       ),
-      color: "#d97706",
+      color: "var(--chart-3)",
     },
     {
       label: "Offer",
@@ -120,7 +125,7 @@ export default async function ApplicationsManagementPage() {
           (totalApplicants || 1)) *
           100
       ),
-      color: "#0f766e",
+      color: "var(--chart-5)",
     },
   ];
 
@@ -135,135 +140,125 @@ export default async function ApplicationsManagementPage() {
         </Button>
       }
     >
-      <div className="space-y-5">
-        {/* Metrics */}
-        <div className="grid md:grid-cols-2 xl:grid-cols-4 border border-border/50 rounded-xl overflow-hidden divide-x divide-border/50">
+      <div className="space-y-6">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {metrics.map((m, i) => (
-            <div key={i} className="border-t-2 border-foreground px-5 py-5">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
-                {m.title}
-              </p>
-              <p className="text-3xl font-semibold tracking-tight leading-none mb-1">
-                {m.value}
-              </p>
-              <p className="text-[11px] text-muted-foreground">
-                {m.description}
-              </p>
-            </div>
+            <MetricCard
+              key={m.title}
+              title={m.title}
+              value={m.value}
+              description={m.description}
+              icon={metricIcons[i]}
+              className="border-border/60"
+            />
           ))}
         </div>
 
-        <div className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
-          {/* Pipeline */}
-          <div className="border border-border/50 rounded-xl overflow-hidden">
-            <div className="px-5 py-3.5 border-b border-border/50 bg-muted/20">
-              <p className="text-xs font-semibold">Application Pipeline</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
+        <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle>Application Pipeline</CardTitle>
+              <CardDescription>
                 Conversion from intake through final decision issuance.
-              </p>
-            </div>
-            <div className="p-5">
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               <HorizontalBarChart items={pipelineData} valueSuffix="%" />
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          {/* Reviewer Load */}
-          <div className="border border-border/50 rounded-xl overflow-hidden">
-            <div className="px-5 py-3.5 border-b border-border/50 bg-muted/20">
-              <p className="text-xs font-semibold">Reviewer Load</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle>Reviewer Load</CardTitle>
+              <CardDescription>
                 Current reviewer queues, specialisations, and turnaround.
-              </p>
-            </div>
-            <div className="p-5">
-              <div className="border border-border/50 rounded-lg bg-muted/20 p-4">
-                <div className="flex items-center justify-between gap-4 mb-2">
-                  <p className="text-xs font-semibold">System Auto-Review</p>
-                  <span className="text-xs font-semibold">
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-lg border bg-muted/20 p-4">
+                <div className="mb-2 flex items-center justify-between gap-4">
+                  <p className="text-sm font-semibold">System Auto-Review</p>
+                  <span className="text-sm font-semibold">
                     {pendingReview} in queue
                   </span>
                 </div>
-                <p className="text-[11px] text-muted-foreground mb-3">
+                <p className="mb-3 text-xs text-muted-foreground">
                   Initial screening and scoring
                 </p>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
                   SLA: 24 Hours
                 </p>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Applications Queue */}
-        <div className="border border-border/50 rounded-xl overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/50 bg-muted/20">
+        <Card className="border-border/60">
+          <CardHeader className="flex flex-row items-start justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold">Applications Queue</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
+              <CardTitle>Applications Queue</CardTitle>
+              <CardDescription>
                 Live queue for reviewer assignment, scoring, and interview
                 coordination.
-              </p>
+              </CardDescription>
             </div>
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="rounded-md text-xs"
-            >
+            <Button asChild variant="outline" size="sm">
               <Link href="/admin/applications/review">Review featured</Link>
             </Button>
-          </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Applicant</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Cohort</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Score</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {vis.map((a: AdminApplication) => (
-                <TableRow key={a.id}>
-                  <TableCell>
-                    <p className="font-medium text-sm">
-                      {a.profiles?.first_name} {a.profiles?.last_name}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {a.id.slice(0, 8)}
-                    </p>
-                  </TableCell>
-                  <TableCell className="text-sm">
-                    {a.profiles?.email || "—"}
-                  </TableCell>
-                  <TableCell>
-                    <p className="text-sm">{getCohortLabel(a.cohort_year)}</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      Step {a.current_step ?? "N/A"}
-                    </p>
-                  </TableCell>
-                  <TableCell>
-                    <ApplicationStatusBadge status={a.status} />
-                  </TableCell>
-                  <TableCell className="text-sm">
-                    {getScoreLabel(a.score)}
-                  </TableCell>
-                </TableRow>
-              ))}
-              {vis.length === 0 && (
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    className="text-center py-8 text-xs text-muted-foreground"
-                  >
-                    No applications submitted yet.
-                  </TableCell>
+                  <TableHead>Applicant</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Cohort</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Score</TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {vis.map((a: AdminApplication) => (
+                  <TableRow key={a.id}>
+                    <TableCell>
+                      <p className="font-medium text-sm">
+                        {a.profiles?.first_name} {a.profiles?.last_name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {a.id.slice(0, 8)}
+                      </p>
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {a.profiles?.email || "—"}
+                    </TableCell>
+                    <TableCell>
+                      <p className="text-sm">{getCohortLabel(a.cohort_year)}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Step {a.current_step ?? "N/A"}
+                      </p>
+                    </TableCell>
+                    <TableCell>
+                      <ApplicationStatusBadge status={a.status} />
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {getScoreLabel(a.score)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {vis.length === 0 && (
+                  <TableRow>
+                    <TableCell
+                      colSpan={5}
+                      className="py-8 text-center text-sm text-muted-foreground"
+                    >
+                      No applications submitted yet.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
     </PageContainer>
   );

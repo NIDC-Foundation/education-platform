@@ -53,17 +53,17 @@ export const programGrowth = [
 ];
 
 export const sectorPlacementBreakdown = [
-    { label: "Public Health", value: 42, color: "var(--primary)" },
-    { label: "Infrastructure", value: 28, color: "#0284c7" },
-    { label: "Education", value: 18, color: "#f59e0b" },
-    { label: "Digital Gov", value: 12, color: "#dc2626" },
+    { label: "Public Health", value: 42, color: "var(--chart-1)" },
+    { label: "Infrastructure", value: 28, color: "var(--chart-2)" },
+    { label: "Education", value: 18, color: "var(--chart-3)" },
+    { label: "Digital Gov", value: 12, color: "var(--chart-5)" },
 ];
 
 export const contentStatusBreakdown = [
-    { label: "Live", value: 72, color: "#10b981", description: "Currently visible to platform users" },
-    { label: "Scheduled", value: 12, color: "#3b82f6", description: "Queued for automated publishing" },
-    { label: "In review", value: 10, color: "#f59e0b", description: "Awaiting final sign-off" },
-    { label: "Draft", value: 6, color: "#94a3b8", description: "Initial editorial generation" },
+    { label: "Live", value: 72, color: "var(--chart-1)", description: "Currently visible to platform users" },
+    { label: "Scheduled", value: 12, color: "var(--chart-2)", description: "Queued for automated publishing" },
+    { label: "In review", value: 10, color: "var(--chart-5)", description: "Awaiting final sign-off" },
+    { label: "Draft", value: 6, color: "var(--muted-foreground)", description: "Initial editorial generation" },
 ];
 
 export const adminContentItems = [
@@ -112,10 +112,10 @@ export const adminImpactReports = [
 ];
 
 export const reportCoverageBreakdown = [
-    { label: "Board Reports", value: 100, color: "var(--primary)" },
-    { label: "Sponsor Metrics", value: 85, color: "#0284c7" },
-    { label: "Public Data", value: 65, color: "#d97706" },
-    { label: "Operational Audit", value: 45, color: "#475569" }
+    { label: "Board Reports", value: 100, color: "var(--chart-1)" },
+    { label: "Sponsor Metrics", value: 85, color: "var(--chart-2)" },
+    { label: "Public Data", value: 65, color: "var(--chart-3)" },
+    { label: "Operational Audit", value: 45, color: "var(--chart-5)" }
 ];
 
 export interface SettingToggle {
@@ -245,10 +245,10 @@ export const programOutcomeHighlights = [
 ];
 
 export const scholarOutcomeBreakdown = [
-    { label: "High Honours", value: 45, color: "var(--primary)" },
-    { label: "Honours", value: 35, color: "#0284c7" },
-    { label: "Technical Certification", value: 15, color: "#d97706" },
-    { label: "Community Leadership", value: 5, color: "#dc2626" },
+    { label: "High Honours", value: 45, color: "var(--chart-1)" },
+    { label: "Honours", value: 35, color: "var(--chart-2)" },
+    { label: "Technical Certification", value: 15, color: "var(--chart-3)" },
+    { label: "Community Leadership", value: 5, color: "var(--chart-5)" },
 ];
 
 export const donorSettings = {

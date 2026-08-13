@@ -6,6 +6,7 @@ import {
 } from "@/components/donor/transparency-charts";
 import { PageContainer } from "@/components/layout/page-container";
 import { ApplicationStatusBadge } from "@/components/ui/application-status-badge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -122,19 +123,15 @@ export default async function AdminDashboardPage() {
             }
         >
             <div className="space-y-6">
-                <Card className="border-border/60 bg-[linear-gradient(135deg,rgba(15,118,110,0.12),rgba(255,255,255,0.98)_45%,rgba(226,244,250,0.95))]">
+                <Card className="border-border/60 bg-gradient-to-br from-primary/8 via-background to-secondary/40">
                     <CardContent className="p-6 md:p-8">
                         <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
                             <div className="space-y-5">
                                 <div>
                                     <div className="flex flex-wrap items-center gap-2">
                                         <h2 className="text-2xl font-semibold tracking-tight">Platform Control Tower</h2>
-                                        <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800">
-                                            Operations healthy
-                                        </span>
-                                        <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold">
-                                            {cohorts[0]?.year || "2026"} intake cycle
-                                        </span>
+                                        <Badge>Operations healthy</Badge>
+                                        <Badge variant="outline">{cohorts[0]?.year || "2026"} intake cycle</Badge>
                                     </div>
                                     <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
                                         Central oversight for intake, scholar delivery, funding deployment, sponsor stewardship,

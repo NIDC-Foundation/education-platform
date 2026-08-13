@@ -190,7 +190,7 @@ export default async function ApplicantDashboard() {
                             {deadlines.length > 0 ? deadlines.map((deadline: ApplicantDeadline) => (
                                 <div key={deadline.id} className="flex items-start gap-3">
                                     {deadline.is_urgent ? (
-                                        <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
+                                        <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
                                     ) : (
                                         <Clock className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
                                     )}
@@ -199,8 +199,8 @@ export default async function ApplicantDashboard() {
                                         <p className="text-xs text-muted-foreground mt-0.5">{new Date(deadline.due_date).toLocaleDateString()}</p>
                                     </div>
                                     <Badge
-                                        variant="outline"
-                                        className={`text-[10px] shrink-0 ${deadline.is_urgent ? "border-amber-300 text-amber-700 bg-amber-50" : ""}`}
+                                        variant={deadline.is_urgent ? "destructive" : "outline"}
+                                        className="text-[10px] shrink-0"
                                     >
                                         {deadline.days_left}d left
                                     </Badge>
@@ -227,10 +227,10 @@ export default async function ApplicantDashboard() {
                             {notifications.length > 0 ? notifications.slice(0, 3).map((notif: ApplicantNotification, i: number) => (
                                 <div key={notif.id}>
                                     <div className={`flex items-start gap-2 ${!notif.is_read ? "opacity-100" : "opacity-70"}`}>
-                                        <div className={`h-2 w-2 rounded-full mt-1.5 shrink-0 ${notif.type === "success" ? "bg-emerald-500" :
-                                            notif.type === "warning" ? "bg-amber-500" :
-                                                notif.type === "error" ? "bg-red-500" :
-                                                    "bg-blue-500"
+                                        <div className={`h-2 w-2 rounded-full mt-1.5 shrink-0 ${notif.type === "success" ? "bg-primary" :
+                                            notif.type === "warning" ? "bg-accent" :
+                                                notif.type === "error" ? "bg-destructive" :
+                                                    "bg-muted-foreground"
                                             }`} />
                                         <div className="flex-1 min-w-0">
                                             <p className="text-xs font-medium leading-snug">{notif.title}</p>

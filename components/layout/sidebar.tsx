@@ -231,7 +231,11 @@ export function SidebarContent({ role = "applicant" }: SidebarProps) {
         .select("first_name, last_name, avatar_url")
         .eq("id", user.id)
         .single();
-      if (error) console.error("Sidebar fetchProfile error:", error);
+      if (error && error.code !== "PGRST116") {
+        console.error(
+          `Sidebar fetchProfile error: ${error.code ?? ""} ${error.message ?? ""}`.trim()
+        );
+      }
       if (profile && isMounted) {
         setUserProfile({
           name:

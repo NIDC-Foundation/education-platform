@@ -19,17 +19,17 @@ type NotificationEntry = {
 
 
 const notifIcon: Record<string, React.ReactNode> = {
-    info: <Info className="h-4 w-4 text-blue-500" />,
-    warning: <AlertTriangle className="h-4 w-4 text-amber-500" />,
-    success: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
-    error: <XCircle className="h-4 w-4 text-red-500" />,
+    info: <Info className="h-4 w-4 text-muted-foreground" />,
+    warning: <AlertTriangle className="h-4 w-4 text-accent" />,
+    success: <CheckCircle2 className="h-4 w-4 text-primary" />,
+    error: <XCircle className="h-4 w-4 text-destructive" />,
 };
 
 const notifBg: Record<string, string> = {
-    info: "bg-blue-50 border-blue-100 dark:bg-blue-900/10",
-    warning: "bg-amber-50 border-amber-100 dark:bg-amber-900/10",
-    success: "bg-emerald-50 border-emerald-100 dark:bg-emerald-900/10",
-    error: "bg-red-50 border-red-100 dark:bg-red-900/10",
+    info: "bg-muted/40 border-border",
+    warning: "bg-accent/10 border-accent/30",
+    success: "bg-primary/5 border-primary/20",
+    error: "bg-destructive/5 border-destructive/20",
 };
 
 export default async function NotificationsPage() {
@@ -62,7 +62,7 @@ export default async function NotificationsPage() {
                             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                                 New
                             </h2>
-                            <Badge className="h-5 text-[10px]">{unread.length}</Badge>
+                            <Badge className="h-5 text-xs">{unread.length}</Badge>
                         </div>
                         {unread.map((notif: NotificationEntry) => (
                             <NotifCard key={notif.id} notif={notif} />
@@ -103,7 +103,7 @@ function NotifCard({ notif, isRead }: { notif: NotificationEntry; isRead?: boole
                         {!isRead && <div className="h-2 w-2 rounded-full bg-primary shrink-0 mt-1.5" />}
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed mt-1">{notif.body}</p>
-                    <p className="text-[10px] text-muted-foreground/60 mt-2">
+                    <p className="text-xs text-muted-foreground/60 mt-2">
                         {new Date(notif.created_at).toLocaleString("en-GB", {
                             day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
                         })}

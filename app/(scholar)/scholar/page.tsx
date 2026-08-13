@@ -248,7 +248,7 @@ export default async function ScholarDashboardPage() {
                             {milestones.filter((m: MilestoneEntry) => m.category === 'internships' || m.category === 'industry placements').map((stage: MilestoneEntry, index: number, arr: MilestoneEntry[]) => (
                                 <div key={stage.id} className="flex gap-3">
                                     <div className="mt-1 flex flex-col items-center">
-                                        <div className={`h-3 w-3 rounded-full ${stage.status === "completed" ? "bg-primary" : stage.status === "active" ? "bg-chart-5" : "bg-muted-foreground/30"}`} />
+                                        <div className={`h-3 w-3 rounded-full ${stage.status === "completed" ? "bg-primary" : stage.status === "active" ? "bg-accent" : "bg-muted-foreground/30"}`} />
                                         {index < arr.length - 1 && <div className="mt-2 h-10 w-px bg-border" />}
                                     </div>
                                     <div className="pb-4">

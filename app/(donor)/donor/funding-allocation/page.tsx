@@ -52,14 +52,14 @@ export default async function FundingAllocationPage() {
     const fundDistribution = fundingRecords.map((r, i) => ({
         label: r.programs?.name || "Support Line",
         value: r.amount || 0,
-        color: ["#0f766e", "#0284c7", "#d97706", "#dc2626"][i % 4]
+        color: ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-5)"][i % 4]
     }));
 
     const scholarFundingBreakdown = [
-        { label: "Tuition & Fees", value: 65, color: "var(--primary)" },
-        { label: "Monthly Stipend", value: 20, color: "#0284c7" },
-        { label: "Research Lab Access", value: 10, color: "#d97706" },
-        { label: "Career Mentorship", value: 5, color: "#475569" },
+        { label: "Tuition & Fees", value: 65, color: "var(--chart-1)" },
+        { label: "Monthly Stipend", value: 20, color: "var(--chart-2)" },
+        { label: "Research Lab Access", value: 10, color: "var(--chart-3)" },
+        { label: "Career Mentorship", value: 5, color: "var(--chart-5)" },
     ];
 
     const cohortSuccessRates = [

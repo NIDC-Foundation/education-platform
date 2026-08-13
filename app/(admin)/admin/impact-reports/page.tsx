@@ -2,6 +2,7 @@ import Link from "next/link";
 import { MetricCard } from "@/components/cards/metric-card";
 import { HorizontalBarChart } from "@/components/donor/transparency-charts";
 import { PageContainer } from "@/components/layout/page-container";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -25,11 +26,11 @@ const impactMetrics = [
     { title: "Audiences", value: "4", description: "Board, sponsors, public, and directors", icon: BookMarked },
 ];
 
-function getReportStatusClass(status: "Draft" | "In review" | "Ready" | "Published") {
-    if (status === "Published") return "bg-emerald-100 text-emerald-800";
-    if (status === "Ready") return "bg-blue-100 text-blue-800";
-    if (status === "In review") return "bg-amber-100 text-amber-800";
-    return "bg-slate-100 text-slate-800";
+function getReportStatusVariant(status: "Draft" | "In review" | "Ready" | "Published") {
+    if (status === "Published") return "default" as const;
+    if (status === "Ready") return "secondary" as const;
+    if (status === "In review") return "destructive" as const;
+    return "outline" as const;
 }
 
 export default function ImpactReportsPage() {
@@ -81,9 +82,9 @@ export default function ImpactReportsPage() {
                                             <p className="font-medium">{report.title}</p>
                                             <p className="mt-1 text-sm text-muted-foreground">{report.period} · {report.audience}</p>
                                         </div>
-                                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${getReportStatusClass(report.status)}`}>
+                                        <Badge variant={getReportStatusVariant(report.status)}>
                                             {report.status}
-                                        </span>
+                                        </Badge>
                                     </div>
                                     <p className="mt-3 text-xs uppercase tracking-[0.2em] text-muted-foreground">
                                         Due {report.dueDate} · {report.confidence}
@@ -122,9 +123,9 @@ export default function ImpactReportsPage() {
                                         <TableCell>{report.dueDate}</TableCell>
                                         <TableCell>{report.confidence}</TableCell>
                                         <TableCell>
-                                            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${getReportStatusClass(report.status)}`}>
+                                            <Badge variant={getReportStatusVariant(report.status)}>
                                                 {report.status}
-                                            </span>
+                                            </Badge>
                                         </TableCell>
                                     </TableRow>
                                 ))}

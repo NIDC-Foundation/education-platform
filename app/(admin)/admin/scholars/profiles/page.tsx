@@ -65,7 +65,7 @@ export default async function ScholarProfilesPage() {
                                                     <StatusBadge status={scholar.status || "active"} />
                                                 </div>
                                                 <p className="mt-1 text-muted-foreground line-clamp-1">{scholar.program || "Technology Track"}</p>
-                                                <p className="mt-2 text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+                                                <p className="mt-2 text-xs uppercase tracking-[0.15em] text-muted-foreground">
                                                     Cohort {scholar.cohort || "2026"} · {scholar.institution || "NTDI Academy"}
                                                 </p>
                                             </div>
@@ -107,11 +107,11 @@ export default async function ScholarProfilesPage() {
 
                                 <div className="grid gap-3 sm:grid-cols-2">
                                     <div className="rounded-xl border bg-muted/15 p-4">
-                                        <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Placement track</p>
+                                        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Placement track</p>
                                         <p className="mt-2 font-semibold">National Infrastructure Readiness</p>
                                     </div>
                                     <div className="rounded-xl border bg-muted/15 p-4">
-                                        <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Mentor Assignment</p>
+                                        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Mentor Assignment</p>
                                         <p className="mt-2 font-semibold">System Unassigned</p>
                                         <p className="mt-1 text-xs text-muted-foreground italic">Assign a mentor via User Management</p>
                                     </div>
@@ -158,13 +158,13 @@ export default async function ScholarProfilesPage() {
                                             <StatusBadge status={milestone.status} />
                                         </div>
                                         <div className="mt-4 space-y-2">
-                                            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                                            <div className="flex items-center justify-between text-xs text-muted-foreground">
                                                 <span>Target Date</span>
                                                 <span>{milestone.dueDate}</span>
                                             </div>
                                             <Progress value={progressValue} className="h-1.5" />
                                         </div>
-                                        <p className="mt-3 text-[10px] uppercase tracking-[0.2em] text-primary/80 font-medium">{milestone.evidence}</p>
+                                        <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/80 font-medium">{milestone.evidence}</p>
                                     </div>
                                 );
                             })}
@@ -188,7 +188,7 @@ export default async function ScholarProfilesPage() {
                                             <span className="text-xs font-bold text-primary">{line.utilisation}% used</span>
                                         </div>
                                         <p className="mt-2 text-xs text-muted-foreground">{line.note}</p>
-                                        <div className="mt-3 flex items-center justify-between text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                                        <div className="mt-3 flex items-center justify-between text-xs uppercase tracking-[0.15em] text-muted-foreground">
                                             <span>Allocated: {line.allocated}</span>
                                             <span>Used: {line.used}</span>
                                         </div>

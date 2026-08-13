@@ -50,6 +50,14 @@ const dashboardIcons = [
     Briefcase,
 ];
 
+const dashboardChartColors = [
+    "var(--chart-1)",
+    "var(--chart-2)",
+    "var(--chart-3)",
+    "var(--chart-4)",
+    "var(--chart-5)",
+];
+
 export default async function DonorDashboardPage() {
     const supabase = await createSupabaseServerClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -87,13 +95,13 @@ export default async function DonorDashboardPage() {
     const fundDistribution = fundingRecords.map((f: FundingRecord, index: number) => ({
         label: f.category || f.programs?.name || "Allocation",
         value: Number(f.amount),
-        color: ["hsl(var(--primary))", "hsl(var(--primary) / 0.8)", "hsl(var(--primary) / 0.6)", "hsl(var(--primary) / 0.4)"][index % 4]
+        color: dashboardChartColors[index % dashboardChartColors.length]
     }));
 
     const scholarOutcomeBreakdown = [
         { label: "High Performance", value: sponsoredScholars.filter((s: SponsoredScholar) => (s.progress_score || 0) >= 80).length, color: "var(--primary)" },
-        { label: "On Track", value: sponsoredScholars.filter((s: SponsoredScholar) => (s.progress_score || 0) >= 60 && (s.progress_score || 0) < 80).length, color: "#f59e0b" },
-        { label: "Support Needed", value: sponsoredScholars.filter((s: SponsoredScholar) => (s.progress_score || 0) < 60).length, color: "#ef4444" },
+        { label: "On Track", value: sponsoredScholars.filter((s: SponsoredScholar) => (s.progress_score || 0) >= 60 && (s.progress_score || 0) < 80).length, color: "var(--chart-2)" },
+        { label: "Support Needed", value: sponsoredScholars.filter((s: SponsoredScholar) => (s.progress_score || 0) < 60).length, color: "var(--destructive)" },
     ].map(item => ({
         ...item,
         value: sponsoredScholars.length > 0 ? Math.round((item.value / sponsoredScholars.length) * 100) : 0
@@ -112,7 +120,7 @@ export default async function DonorDashboardPage() {
             }
         >
             <div className="space-y-6">
-                <Card className="border-border/60 bg-[linear-gradient(135deg,rgba(34,197,94,0.10),rgba(255,255,255,0.98)_52%,rgba(237,248,243,0.92))]">
+                <Card className="border-border/60 bg-gradient-to-br from-primary/8 via-background to-secondary/40">
                     <CardContent className="p-6 md:p-8">
                         <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
                             <div className="space-y-5">
@@ -268,7 +276,7 @@ export default async function DonorDashboardPage() {
                                             </div>
                                             <p className="text-sm text-muted-foreground">{scholar.program || "Technology Track"} · {scholar.institution || "NTDI Academy"}</p>
                                         </div>
-                                        <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">
+                                        <Badge variant={progressScore >= 80 ? "default" : progressScore >= 60 ? "secondary" : "destructive"}>
                                             {progressScore >= 80 ? "Excellent" : progressScore >= 60 ? "On Track" : "Needs Review"}
                                         </Badge>
                                     </div>

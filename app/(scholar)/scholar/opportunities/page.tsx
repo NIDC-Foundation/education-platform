@@ -116,7 +116,7 @@ export default async function OpportunitiesPage() {
                         stage.status === "completed"
                           ? "bg-primary"
                           : stage.status === "active"
-                          ? "bg-chart-5"
+                          ? "bg-accent"
                           : "bg-border"
                       }`}
                     />

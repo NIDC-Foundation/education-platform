@@ -41,7 +41,7 @@ export function DonutBreakdownChart({
    const donutBackground =
      segments.length > 0
        ? `conic-gradient(${segments.join(", ")})`
-       : "hsl(var(--muted))";
+       : "var(--muted)";
 
     return (
         <div className={cn("grid gap-6 lg:grid-cols-[190px_1fr] lg:items-center", className)}>
@@ -120,7 +120,7 @@ export function HorizontalBarChart({
 export function GrowthLineChart({
     data,
     valueLabel,
-    accent = "#16a34a",
+    accent = "var(--primary)",
 }: {
     data: TrendPoint[];
     valueLabel: string;

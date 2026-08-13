@@ -119,7 +119,7 @@ function TextBlock({ label, value }: { label: string; value?: string }) {
           {value}
         </p>
       ) : (
-        <div className="flex items-center gap-2 text-amber-600 text-xs">
+        <div className="flex items-center gap-2 text-destructive text-xs">
           <AlertCircle className="h-3.5 w-3.5" /> Not completed
         </div>
       )}
@@ -198,13 +198,13 @@ export function ApplicationReview({
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
-        <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+      <div className="flex items-start gap-3 p-4 bg-destructive/5 border border-destructive/20 rounded-xl text-sm text-destructive">
+        <AlertCircle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
         <div>
           <p className="font-semibold">
             Final Submission — No Revisions After Submit
           </p>
-          <p className="mt-0.5 text-amber-700">
+          <p className="mt-0.5 text-destructive/80">
             Once you click &quot;Submit Application&quot;, your application is
             locked and forwarded to the Selection Board.
           </p>

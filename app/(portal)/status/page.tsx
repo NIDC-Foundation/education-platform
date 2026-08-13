@@ -77,7 +77,7 @@ export default async function ApplicationStatusPage() {
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-sm font-semibold">{item.label}</span>
                                                     {isCurrent && (
-                                                        <Badge className="text-[10px] h-4 animate-pulse">Current Stage</Badge>
+                                                        <Badge className="text-xs h-4 animate-pulse">Current Stage</Badge>
                                                     )}
                                                 </div>
                                                 {isDone && application?.updated_at && i === statusIndex - 1 && (
@@ -178,7 +178,7 @@ export default async function ApplicationStatusPage() {
                                         <p className="text-xs font-medium leading-snug">{d.label}</p>
                                         <p className="text-xs text-muted-foreground">{new Date(d.due_date).toLocaleDateString()}</p>
                                     </div>
-                                    <Badge variant="outline" className="text-[10px] shrink-0">
+                                    <Badge variant="outline" className="text-xs shrink-0">
                                         {d.days_left}d
                                     </Badge>
                                 </div>

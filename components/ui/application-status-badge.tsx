@@ -1,41 +1,47 @@
 import { cn } from "@/lib/utils";
 import type { ApplicationStatus } from "@/types";
 
+// Reads as a single-direction pipeline (draft -> submitted -> under_review ->
+// shortlisted -> interview_stage -> accepted), plus a negative terminal state
+// (rejected). Adjacent stages intentionally share a tone rather than each
+// getting a unique hue that would need reinventing in dark mode — see
+// ui-registry.md. The label text differentiates neighboring stages; the tone
+// signals which broad phase the application is in.
 export const applicationStatusConfig: Record<ApplicationStatus, { label: string; className: string; dotColor: string }> = {
     draft: {
         label: "Draft",
-        className: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300",
-        dotColor: "bg-slate-400",
+        className: "bg-muted text-muted-foreground border-border",
+        dotColor: "bg-muted-foreground",
     },
     submitted: {
         label: "Submitted",
-        className: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300",
-        dotColor: "bg-blue-500",
+        className: "bg-secondary text-secondary-foreground border-transparent",
+        dotColor: "bg-secondary-foreground",
     },
     under_review: {
         label: "Under Review",
-        className: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300",
-        dotColor: "bg-amber-500",
+        className: "bg-secondary text-secondary-foreground border-transparent",
+        dotColor: "bg-secondary-foreground",
     },
     shortlisted: {
         label: "Shortlisted",
-        className: "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300",
-        dotColor: "bg-purple-500",
+        className: "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20",
+        dotColor: "bg-primary",
     },
     interview_stage: {
         label: "Interview Stage",
-        className: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300",
-        dotColor: "bg-indigo-500",
+        className: "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20",
+        dotColor: "bg-primary",
     },
     accepted: {
         label: "Accepted",
-        className: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300",
-        dotColor: "bg-emerald-500",
+        className: "bg-primary text-primary-foreground border-transparent",
+        dotColor: "bg-primary-foreground",
     },
     rejected: {
         label: "Rejected",
-        className: "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300",
-        dotColor: "bg-red-500",
+        className: "bg-destructive/10 text-destructive border-destructive/20 dark:bg-destructive/20",
+        dotColor: "bg-destructive",
     },
 };
 

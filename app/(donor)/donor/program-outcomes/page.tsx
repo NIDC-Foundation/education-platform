@@ -83,7 +83,6 @@ export default function ProgramOutcomesPage() {
                             <GrowthLineChart
                                 data={programGrowth}
                                 valueLabel="Supported scholars per year."
-                                accent="#7c3aed"
                             />
                         </CardContent>
                     </Card>

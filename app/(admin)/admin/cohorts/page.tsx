@@ -46,7 +46,7 @@ export default async function CohortsManagementPage() {
     const cohortDistribution = cohorts.map((c: AdminCohort) => ({
         label: c.year.toString(),
         value: c.active_scholars_count || 0,
-        color: c.year === 2026 ? "#dc2626" : c.year === 2025 ? "#d97706" : c.year === 2024 ? "#0284c7" : "#0f766e",
+        color: c.year === 2026 ? "var(--chart-1)" : c.year === 2025 ? "var(--chart-2)" : c.year === 2024 ? "var(--chart-3)" : "var(--chart-5)",
         description: c.phase || "Cohort phase",
         meta: `${c.readiness_status || "Ready"}`
     }));

@@ -5,6 +5,7 @@ import {
     HorizontalBarChart,
 } from "@/components/donor/transparency-charts";
 import { PageContainer } from "@/components/layout/page-container";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -28,11 +29,11 @@ const contentMetrics = [
     { title: "Campaign Sends", value: "12", description: "Current reporting and stewardship outputs", icon: Send },
 ];
 
-function getContentStatusClass(status: "Draft" | "In review" | "Scheduled" | "Live") {
-    if (status === "Live") return "bg-emerald-100 text-emerald-800";
-    if (status === "Scheduled") return "bg-blue-100 text-blue-800";
-    if (status === "In review") return "bg-amber-100 text-amber-800";
-    return "bg-slate-100 text-slate-800";
+function getContentStatusVariant(status: "Draft" | "In review" | "Scheduled" | "Live") {
+    if (status === "Live") return "default" as const;
+    if (status === "Scheduled") return "secondary" as const;
+    if (status === "In review") return "destructive" as const;
+    return "outline" as const;
 }
 
 export default function ContentManagementPage() {
@@ -112,9 +113,9 @@ export default function ContentManagementPage() {
                                         <TableCell>{item.owner}</TableCell>
                                         <TableCell>{item.updatedAt}</TableCell>
                                         <TableCell>
-                                            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${getContentStatusClass(item.status)}`}>
+                                            <Badge variant={getContentStatusVariant(item.status)}>
                                                 {item.status}
-                                            </span>
+                                            </Badge>
                                         </TableCell>
                                     </TableRow>
                                 ))}

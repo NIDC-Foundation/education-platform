@@ -5,6 +5,7 @@ import {
     HorizontalBarChart,
 } from "@/components/donor/transparency-charts";
 import { PageContainer } from "@/components/layout/page-container";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -31,10 +32,10 @@ type LedgerEntry = {
 };
 
 
-function getFundingStatusClass(status: string) {
-    if (status === "completed" || status === "Disbursed") return "bg-emerald-100 text-emerald-800";
-    if (status === "pending" || status === "Committed") return "bg-blue-100 text-blue-800";
-    return "bg-red-100 text-red-800";
+function getFundingStatusVariant(status: string) {
+    if (status === "completed" || status === "Disbursed") return "default" as const;
+    if (status === "pending" || status === "Committed") return "secondary" as const;
+    return "destructive" as const;
 }
 
 export default async function FundingManagementPage() {
@@ -71,7 +72,7 @@ export default async function FundingManagementPage() {
     const distributionItems = Object.entries(programDistribution).map(([label, value], index) => ({
         label,
         value: Number(value),
-        color: ["#0f766e", "#0284c7", "#d97706", "#dc2626", "#475569"][index % 5],
+        color: ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)"][index % 5],
         description: `Total funding for ${label}`,
         meta: `N${(Number(value) / 1000000).toFixed(0)}M`
     }));
@@ -158,9 +159,9 @@ export default async function FundingManagementPage() {
                                         <TableCell>N{Number(entry.amount).toLocaleString()}</TableCell>
                                         <TableCell>{new Date(entry.date).toLocaleDateString()}</TableCell>
                                         <TableCell>
-                                            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${getFundingStatusClass(entry.status)}`}>
+                                            <Badge variant={getFundingStatusVariant(entry.status)}>
                                                 {entry.status}
-                                            </span>
+                                            </Badge>
                                         </TableCell>
                                     </TableRow>
                                 ))}

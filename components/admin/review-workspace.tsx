@@ -73,10 +73,10 @@ const documentStatusLabel: Record<DocumentStatus, string> = {
 };
 
 const documentStatusIcon: Record<DocumentStatus, React.ReactNode> = {
-    verified: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
-    pending: <Clock className="h-4 w-4 text-amber-500" />,
-    rejected: <XCircle className="h-4 w-4 text-red-500" />,
-    expiring: <AlertCircle className="h-4 w-4 text-red-500" />,
+    verified: <CheckCircle2 className="h-4 w-4 text-primary" />,
+    pending: <Clock className="h-4 w-4 text-muted-foreground" />,
+    rejected: <XCircle className="h-4 w-4 text-destructive" />,
+    expiring: <AlertCircle className="h-4 w-4 text-destructive" />,
 };
 
 const documentSlotLabels: Record<string, string> = {
@@ -120,12 +120,12 @@ function getDocumentDisplayLabel(document: UploadedDocument): string {
 function getDocumentStatusClassName(status: DocumentStatus): string {
     switch (status) {
         case "verified":
-            return "border-emerald-200 bg-emerald-50 text-emerald-700";
+            return "border-primary/20 bg-primary/5 text-primary";
         case "pending":
-            return "border-amber-200 bg-amber-50 text-amber-700";
+            return "border-border bg-muted/30 text-muted-foreground";
         case "rejected":
         case "expiring":
-            return "border-red-200 bg-red-50 text-red-700";
+            return "border-destructive/20 bg-destructive/5 text-destructive";
         default:
             return "border-border bg-background text-foreground";
     }
@@ -328,11 +328,11 @@ export function ReviewWorkspace({ application, cohorts }: ReviewWorkspaceProps) 
                                 <p className="font-medium">Document readiness</p>
                             </div>
                             <div className="mt-3 flex flex-wrap gap-3 text-sm">
-                                <div className="flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-emerald-700">
+                                <div className="flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-primary">
                                     <CheckCircle2 className="h-4 w-4" />
                                     <span>{verifiedDocuments} verified</span>
                                 </div>
-                                <div className="flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1 text-amber-700">
+                                <div className="flex items-center gap-2 rounded-full bg-muted px-3 py-1 text-muted-foreground">
                                     <Clock className="h-4 w-4" />
                                     <span>{pendingDocuments} under review</span>
                                 </div>
@@ -385,7 +385,6 @@ export function ReviewWorkspace({ application, cohorts }: ReviewWorkspaceProps) 
                                 disabled={isSaving}
                                 type="button"
                                 variant={decision === "shortlisted" || decision === "interview_stage" ? "default" : "outline"}
-                                className={decision === "shortlisted" || decision === "interview_stage" ? "bg-emerald-600 hover:bg-emerald-700 text-white" : ""}
                                 onClick={() => {
                                     if (!selectedCohortId) {
                                         setFeedback("Error: Please assign a cohort before approving the scholar.");
@@ -483,7 +482,7 @@ export function ReviewWorkspace({ application, cohorts }: ReviewWorkspaceProps) 
                                                         size="sm"
                                                         variant="outline"
                                                         disabled={isSaving || Boolean(documentAction)}
-                                                        className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800"
+                                                        className="border-primary/30 text-primary hover:bg-primary/10 hover:text-primary"
                                                         onClick={() => handleDocumentStatusChange(document.id, "verified")}
                                                     >
                                                         {isReviewingThisDocument && documentAction?.status === "verified" && (
@@ -496,7 +495,7 @@ export function ReviewWorkspace({ application, cohorts }: ReviewWorkspaceProps) 
                                                         size="sm"
                                                         variant="outline"
                                                         disabled={isSaving || Boolean(documentAction)}
-                                                        className="border-red-200 text-red-700 hover:bg-red-50 hover:text-red-800"
+                                                        className="border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive"
                                                         onClick={() => handleDocumentStatusChange(document.id, "rejected")}
                                                     >
                                                         {isReviewingThisDocument && documentAction?.status === "rejected" && (

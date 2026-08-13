@@ -22,6 +22,7 @@ export default function ImpactReportsPage() {
                             value={metric.value}
                             description={metric.description}
                             icon={[Target, TrendingUp, FileText, FileText][index % 4]}
+                            className="border-border/60"
                         />
                     ))}
                 </div>
@@ -35,7 +36,7 @@ export default function ImpactReportsPage() {
                         <GrowthLineChart
                             data={programGrowth}
                             valueLabel="Yearly growth in donor-backed scholar coverage."
-                            accent="#0284c7"
+                            accent="var(--chart-2)"
                         />
                     </CardContent>
                 </Card>

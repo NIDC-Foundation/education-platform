@@ -48,9 +48,9 @@ export default async function SponsoredScholarsPage() {
         >
             <div className="space-y-6">
                 <div className="grid gap-4 md:grid-cols-3">
-                    <MetricCard title="Sponsored Scholars" value={sponsoredScholars.length} description="Currently covered by your funding" icon={Users} />
-                    <MetricCard title="Average Progress" value={`${averageProgress}%`} description="Combined academic and development score" icon={Award} />
-                    <MetricCard title="Strong Performers" value={strongPerformers} description="Scholars at or above 80% progress" icon={BookOpen} />
+                    <MetricCard title="Sponsored Scholars" value={sponsoredScholars.length} description="Currently covered by your funding" icon={Users} className="border-border/60" />
+                    <MetricCard title="Average Progress" value={`${averageProgress}%`} description="Combined academic and development score" icon={Award} className="border-border/60" />
+                    <MetricCard title="Strong Performers" value={strongPerformers} description="Scholars at or above 80% progress" icon={BookOpen} className="border-border/60" />
                 </div>
 
                 <div className="grid gap-4 xl:grid-cols-2">
@@ -78,7 +78,7 @@ export default async function SponsoredScholarsPage() {
                                                 <p className="mt-1 text-sm text-muted-foreground">{scholar.program || "Not provided"}</p>
                                                 <p className="text-sm text-muted-foreground">{scholar.institution || "Not provided"}</p>
                                             </div>
-                                            <Badge className={(scholar.progress_score || 0) >= 80 ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-100" : "bg-blue-100 text-blue-800 hover:bg-blue-100"}>
+                                            <Badge variant={(scholar.progress_score || 0) >= 80 ? "default" : "secondary"}>
                                                 {(scholar.progress_score || 0) >= 80 ? "Excellent" : "On Track"}
                                             </Badge>
                                         </div>
