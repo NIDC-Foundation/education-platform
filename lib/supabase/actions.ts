@@ -1172,6 +1172,105 @@ export async function getAdminCohorts() {
     return mergeAdminCohortsWithApplicationRollups(cohorts, applications);
 }
 
+function getMissingCohortColumn(error: unknown): string | null {
+    if (!error || typeof error !== "object") {
+        return null;
+    }
+
+    const message = typeof (error as Record<string, unknown>).message === "string"
+        ? (error as Record<string, unknown>).message as string
+        : "";
+
+    const match = message.match(/Could not find the '([^']+)' column of 'cohorts' in the schema cache/i);
+    return match ? match[1] : null;
+}
+
+async function insertCohortWithSchemaFallback(
+    client: PublicSupabaseClient,
+    payload: Record<string, string | number>
+): Promise<{ data: null; error: unknown }> {
+    let currentPayload = payload;
+
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+        const { error } = await client.from("cohorts").insert(currentPayload);
+        if (!error) {
+            return { data: null, error: null };
+        }
+
+        const missingColumn = getMissingCohortColumn(error);
+        if (!missingColumn || !(missingColumn in currentPayload)) {
+            return { data: null, error };
+        }
+
+        const { [missingColumn]: _omitted, ...rest } = currentPayload;
+        currentPayload = rest;
+    }
+
+    return {
+        data: null,
+        error: new Error("Failed to create cohort: the cohorts table is missing columns this insert needs."),
+    };
+}
+
+export async function createCohort(payload: {
+    year: number | string;
+    phase: string;
+    programId?: string;
+    fundingReleased?: number | string;
+    readinessStatus?: string;
+}): Promise<{ error: string | null }> {
+    const supabase = await createSupabaseServerClient();
+    await verifyAdminAccess(supabase);
+
+    const sanitizedYear = getNumericValue(payload.year);
+    if (sanitizedYear === null || !Number.isInteger(sanitizedYear) || sanitizedYear < 2000 || sanitizedYear > 2100) {
+        return { error: "Enter a valid cohort year." };
+    }
+
+    const sanitizedPhase = getTrimmedString(payload.phase);
+    if (!sanitizedPhase) {
+        return { error: "Phase is required." };
+    }
+
+    const sanitizedProgramId = getTrimmedString(payload.programId);
+
+    let sanitizedFundingReleased = 0;
+    if (payload.fundingReleased !== undefined && payload.fundingReleased !== "") {
+        const parsedFundingReleased = getNumericValue(payload.fundingReleased);
+        if (parsedFundingReleased === null || parsedFundingReleased < 0) {
+            return { error: "Funding released must be a non-negative number." };
+        }
+        sanitizedFundingReleased = parsedFundingReleased;
+    }
+
+    const sanitizedReadinessStatus = getTrimmedString(payload.readinessStatus) ?? "planned";
+
+    const insertPayload: Record<string, string | number> = {
+        year: sanitizedYear,
+        phase: sanitizedPhase,
+        funding_released: sanitizedFundingReleased,
+        readiness_status: sanitizedReadinessStatus,
+    };
+
+    if (sanitizedProgramId) {
+        insertPayload.program_id = sanitizedProgramId;
+    }
+
+    const { error } = await runWithTablePermissionFallback(supabase, "cohorts", (client) =>
+        insertCohortWithSchemaFallback(client, insertPayload)
+    );
+
+    if (error) {
+        const message = (error as { message?: string; code?: string })?.message || "";
+        if (message.toLowerCase().includes("duplicate") || message.toLowerCase().includes("unique")) {
+            return { error: `A cohort for year ${sanitizedYear} already exists.` };
+        }
+        return { error: message || "Failed to create cohort." };
+    }
+
+    return { error: null };
+}
+
 export async function getAdminFundingLedger() {
     const supabase = await createSupabaseServerClient();
     await verifyAdminAccess(supabase);

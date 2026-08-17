@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+import Image from "next/image";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -167,10 +168,14 @@ function SignupPageContent() {
         {/* ── Left: Brand Panel ── */}
         <div className="bg-foreground p-8 md:p-10 hidden md:flex flex-col gap-8 justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center shrink-0">
-              <span className="text-primary-foreground font-bold text-sm">
-                N
-              </span>
+            <div className="h-8 w-12 rounded-md bg-white flex items-center justify-center shrink-0 p-1">
+              <Image
+                src="/images/logo.png"
+                alt="Logo"
+                width={100}
+                height={67}
+                className="h-full w-full object-contain"
+              />
             </div>
             <span className="text-background font-bold text-sm tracking-tight">
               National Talent Initiative
@@ -211,11 +216,13 @@ function SignupPageContent() {
         <div className="bg-background p-8 md:p-10 flex flex-col gap-5">
           {/* Mobile logo */}
           <Link href="/" className="flex md:hidden items-center gap-2">
-            <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-xs">
-                N
-              </span>
-            </div>
+            <Image
+              src="/images/logo.png"
+              alt="Logo"
+              width={100}
+              height={67}
+              className="h-7 w-auto object-contain"
+            />
             <span className="font-bold text-sm tracking-tight">
               National Talent Initiative
             </span>

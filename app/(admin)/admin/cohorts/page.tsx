@@ -14,9 +14,10 @@ import {
 } from "@/components/ui/table";
 import { Flag, GraduationCap, ListChecks, Users } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { getAdminCohorts } from "@/lib/supabase/actions";
+import { getAdminCohorts, getAdminPrograms } from "@/lib/supabase/actions";
 import { redirect } from "next/navigation";
 import { AdminCohort } from "@/types";
+import { CreateCohortDialog } from "@/components/admin/create-cohort-dialog";
 
 
 
@@ -28,7 +29,10 @@ export default async function CohortsManagementPage() {
         redirect("/login");
     }
     
-    const cohorts = await getAdminCohorts();
+    const [cohorts, programs] = await Promise.all([
+        getAdminCohorts(),
+        getAdminPrograms(),
+    ]);
 
     const totalScholars = cohorts.reduce((acc: number, c: AdminCohort) => acc + (c.active_scholars_count || 0), 0);
     const avgReviewCompletion = cohorts.length > 0
@@ -56,9 +60,12 @@ export default async function CohortsManagementPage() {
             title="Cohorts Management"
             description="Oversee cohort readiness, phase transitions, review completion, and funding release by year."
             action={
-                <Button asChild>
-                    <Link href="/admin/applications">Back to Applications</Link>
-                </Button>
+                <div className="flex gap-3">
+                    <Button asChild variant="outline">
+                        <Link href="/admin/applications">Back to Applications</Link>
+                    </Button>
+                    <CreateCohortDialog programs={programs} />
+                </div>
             }
         >
             <div className="space-y-6">

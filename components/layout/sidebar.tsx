@@ -282,15 +282,14 @@ export function SidebarContent({ role = "applicant" }: SidebarProps) {
       {/* Header */}
       <div className="h-14 flex items-center px-4 border-b border-border/50 shrink-0 gap-2.5">
         <Link href={meta.homeHref} className="flex items-center gap-2.5">
-          <div className="h-6 w-6 rounded-md bg-primary flex items-center justify-center shrink-0">
-            <span className="text-primary-foreground font-bold text-[11px]">
-              N
-            </span>
-          </div>
+          <Image
+            src="/images/logo.png"
+            alt="Logo"
+            width={24}
+            height={24}
+            className="h-6 w-6 shrink-0 object-contain"
+          />
           <div>
-            <p className="font-bold text-xs leading-none tracking-tight">
-              Talent Initiative
-            </p>
             <p className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground mt-0.5">
               {meta.productLabel}
             </p>

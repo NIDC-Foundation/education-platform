@@ -5,18 +5,11 @@ import { PageContainer } from "@/components/layout/page-container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import { KeyRound, Shield, UserCheck, Users } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getAdminUsers } from "@/lib/supabase/actions";
 import { redirect } from "next/navigation";
+import { UserDirectoryTable } from "@/components/admin/user-directory-table";
 
 type UserEntry = {
     id: string;
@@ -137,32 +130,7 @@ export default async function UserManagementPage() {
                         <CardDescription>Admin view of account ownership, access scope, and current account status.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Role</TableHead>
-                                    <TableHead>Email</TableHead>
-                                    <TableHead>Joined</TableHead>
-                                    <TableHead>Status</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {displayUsers.map((u: UserEntry) => (
-                                    <TableRow key={u.id}>
-                                        <TableCell className="font-medium">{u.first_name} {u.last_name}</TableCell>
-                                        <TableCell className="capitalize">{u.role}</TableCell>
-                                        <TableCell>{u.email}</TableCell>
-                                        <TableCell>{new Date(u.created_at).toLocaleDateString()}</TableCell>
-                                        <TableCell>
-                                            <Badge variant={getUserStatusVariant(u.status)}>
-                                                {u.status}
-                                            </Badge>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                        <UserDirectoryTable users={allUsers} />
                     </CardContent>
                 </Card>
             </div>
